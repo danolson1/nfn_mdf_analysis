@@ -142,6 +142,15 @@ python run_mdf_analysis.py --modes 4 5     # just the two paper figures
 Everything under `results/` is regenerated from scratch by that command; it is committed
 so the repository can be read without running anything.
 
+Re-running in a fresh clone reproduces the committed `mdf_summary.csv`, SBtab models,
+detail tables and PNG figures byte-for-byte. Only the PDFs differ, because matplotlib
+embeds a creation timestamp; set `SOURCE_DATE_EPOCH` (which matplotlib honors) to make
+those reproducible too:
+
+```bash
+SOURCE_DATE_EPOCH=1727395200 python run_mdf_analysis.py
+```
+
 Pinned versions are in `requirements.txt`. The results were produced with
 equilibrator-api 0.8.1 and Python 3.12.14 on Windows 11. `equilibrator-cache-data` ships
 the component-contribution training data as a Python package, so no download is needed on
