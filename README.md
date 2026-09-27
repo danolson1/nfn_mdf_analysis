@@ -106,16 +106,24 @@ All pathways are evaluated under one set of conditions (`data/thermodynamic_conf
 | ionic strength | 0.25 M |
 | pMg | 3.0 |
 | temperature | 328 K (55 °C) |
-| dg_confidence | 0.95 |
+| dg_confidence | 0.0 |
 | ln_conc_confidence | 0.95 |
 
-ΔrG′° values are not treated as point estimates: the linear program lets them vary within
-a 95% chi-squared confidence ellipsoid of the component-contribution covariance matrix,
-and the reported MDF is the worst case over that ellipsoid. The `stdev_factor = 1.96` row
-inherited from the original SBtab files is retained for provenance but is **inert** —
-equilibrator-pathway 0.8.1 does not read it in the MDF code path. It encodes the same
-95% interval, so the intent is unchanged, and setting `dg_confidence` explicitly gives
-the same numbers as the defaults.
+**ΔrG′° is used as a point estimate** (`dg_confidence = 0`). This matters. With a
+non-zero value, equilibrator-pathway treats the ΔrG′° vector as a *decision variable*
+constrained to that confidence ellipsoid of the component-contribution covariance matrix
+and **maximizes** over it — so the result is a best-case bound, not a worst-case one, and
+not the expected value. At the library default of 0.95 it inflates every MDF here by
+0.7–5.7 kJ/mol and makes two infeasible pathways appear feasible; see "Effect of the
+ΔrG′° uncertainty" under Results.
+
+`ln_conc_confidence` is left at its default of 0.95; with explicit min/max bounds read
+from a model file it reproduces those bounds exactly and has no other effect.
+
+The `stdev_factor = 1.96` row inherited from the original SBtab files is retained for
+provenance but is **inert** — equilibrator-pathway 0.8.1 does not read it in the MDF code
+path (it survives only as a TODO in the ECM code). Do not mistake it for uncertainty
+handling.
 
 Concentrations are free to vary between 0.001 and 10 mM except where fixed to represent a
 boundary condition or a buffered pool: glucose 10 mM, **ethanol 2000 mM**, phosphate
@@ -168,57 +176,134 @@ unaffected either way — but other tools may not be.)
 
 ## Results
 
-| Mode | Pathway | MDF (kJ/mol) | Bottleneck |
-|-----:|---------|-------------:|------------|
-|  4 | NFN-only pathway with engineered AdhE | 7.26 | upper glycolysis |
-| 11 | Tsac NADPH substrate-channeling | 7.24 | upper glycolysis |
-|  9 | Tsac fd adh | 7.22 | upper glycolysis, aldh |
-|  2 | Tsac NADH+NADPH ethanologen | 4.80 | upper glycolysis, bif-hyd, nfn, aldh, adhp |
-|  3 | Tsac NADH+NADPH ethanologen fnorp | 4.79 | upper glycolysis, aldh, adhp |
-| 15 | Cth malate shunt FNORp adhp | 4.08 | upper glycolysis, pepck |
-|  7 | PDC ethanol pathway | 3.25 | upper glycolysis, adh |
-|  6 | Cth malate shunt adhp | 2.97 | upper glycolysis, pepck, aldh, adhp |
-| 10 | Tsac NADH substrate-channeling | 2.59 | upper glycolysis, aldh_adh |
-|  8 | PDC Xhyd ethanol pathway | 2.46 | upper glycolysis, xhyd, adhp |
-|  1 | Tsac NADH ethanologen | 2.20 | upper glycolysis, aldh, adh |
-|  5 | Cth ethanologen WT adhE | 2.16 | upper glycolysis, aldh, adh |
-| 13 | PFOR FNOR ethanol pathway | 2.16 | upper glycolysis, aldh, adh |
-| 12 | PDH ethanol pathway | 2.12 | upper glycolysis, aldh, adh |
-| 14 | PFOR FNOR Xhyd pathway | 1.88 | upper glycolysis, xhyd, aldh |
+MDF values use the component-contribution point estimates (`dg_confidence = 0`).
 
-"Upper glycolysis" is the fba/tpi/gap segment, which is the thermodynamic bottleneck in
-every pathway: it is limiting regardless of the ethanol route, and sets a ceiling of
-about 7.3 kJ/mol under these conditions.
+| Mode | Pathway | ATP/glc | MDF (kJ/mol) | Bottleneck | NADH/NAD⁺ | NADPH/NADP⁺ |
+|-----:|---------|--------:|-------------:|------------|----------:|------------:|
+|  4 | NFN-only pathway with engineered AdhE | 2 | 6.57 | fba, tpi, gap, pgk, gpm, eno | 0.010 | 30.8 |
+| 11 | Tsac NADPH substrate-channeling | 2 | 6.57 | fba, tpi, gap, pgk, gpm, eno | 0.010 | 11.8 |
+|  9 | Tsac fd adh | 2 | 6.54 | fba, tpi, gap, pgk, gpm, eno, aldh | 0.011 | — |
+|  3 | Tsac NADH+NADPH ethanologen fnorp | 2 | 3.11 | fba, tpi, gap, aldh, adhp | 0.296 | 100 |
+|  2 | Tsac NADH+NADPH ethanologen | 2 | 2.64 | fba, tpi, gap, bif-hyd, nfn, aldh, adhp | 0.430 | 47.2 |
+|  7 | PDC ethanol pathway | 2 | 2.15 | fba, tpi, gap, adh | 0.640 | — |
+|  8 | PDC Xhyd ethanol pathway | 2 | 1.61 | fba, tpi, gap, xhyd, adhp | 0.987 | 0.6 |
+| 10 | Tsac NADH substrate-channeling | 2 | 0.92 | fba, tpi, gap, aldh_adh | 1.721 | — |
+|  1 | Tsac NADH ethanologen | 2 | 0.77 | fba, tpi, gap, aldh, adh | 1.949 | — |
+|  5 | Cth ethanologen WT adhE | 3 | 0.77 | fba, tpi, gap, aldh, adh | 1.949 | — |
+| 12 | PDH ethanol pathway | 2 | 0.77 | fba, tpi, gap, aldh, adh | 1.949 | — |
+| 13 | PFOR FNOR ethanol pathway | 2 | 0.77 | fba, tpi, gap, aldh, adh | 1.949 | — |
+| 14 | PFOR FNOR Xhyd pathway | 2 | 0.66 | fba, tpi, gap, xhyd, aldh, adhp | 2.130 | 1.9 |
+|  6 | Cth malate shunt adhp | 3 | **−1.59** | pepck | 0.160 | 38.2 |
+| 15 | Cth malate shunt FNORp adhp | 2 | **−1.59** | pepck | 0.042 | 20.6 |
 
-The pathways that reach that ceiling are those that avoid spending driving force on the
-terminal aldehyde and alcohol dehydrogenase steps, either by coupling them to NADPH
-generated by the electron-bifurcating transhydrogenase NfnAB (mode 4), by channeling the
-acetaldehyde intermediate (mode 11), or by using a ferredoxin-linked ADH (mode 9). The
-native *C. thermocellum* route with wild-type NADH-linked AdhE (mode 5, 2.16 kJ/mol) and
-the native *T. saccharolyticum* route with hydrogen cycling (mode 1, 2.20 kJ/mol) are
-both limited at their `aldh` and `adh` steps.
+Both malate-shunt modes are infeasible at these conditions, blocked at PEP carboxykinase
+by the low CO₂ concentration (0.001 mM) — the effect noted by Dash et al. (2019).
+
+### The bottleneck is shared between the two ends of the pathway
+
+"Upper glycolysis" is the fba/tpi/gap segment. It is binding in all 13 feasible
+pathways, but in 11 of them the terminal aldehyde and alcohol dehydrogenase steps are
+binding as well: the bottleneck is **shared**, not localized to glycolysis.
+
+The two ends limit together because they are coupled through a single cofactor ratio.
+GAPDH reduces NAD⁺, so its driving force rises as NADH/NAD⁺ falls; ALDH and ADH oxidize
+NADH, so theirs rises as NADH/NAD⁺ rises. When all three draw on the same pool no value
+of the ratio satisfies both, and the optimum is the compromise at which they become
+limiting together — NADH/NAD⁺ = 1.95 in the native *C. thermocellum* pathway.
+
+### Excess driving force is trapped at PFOR
+
+The native pathway is not short of driving force overall. At its optimum (MDF 0.77):
+
+```
+glk  29.03   fba   0.77 *  pgk   4.13   pyk  12.94   aldh  0.77 *
+pgi   5.66   tpi   0.77 *  gpm   2.35   pfor 13.93   adh   0.77 *
+pfk   9.51   gap   0.77 *  eno   4.56   rnf   3.95          (* = at the MDF)
+```
+
+PFOR runs at 13.9 kJ/mol — eighteen times the MDF — with Fd(red)/Fd(ox) poised high.
+That surplus is **trapped**: RNF can only discharge it into NADH/NAD⁺, the very ratio
+GAPDH needs kept low, so moving more electrons into that pool relieves the terminal steps
+only by constraining GAPDH to the same degree.
+
+### NfnAB unlocks it by separating the two redox ratios
+
+NfnAB reduces NADP⁺ at the expense of reduced ferredoxin *and* NADH, which lets the two
+pyridine nucleotide ratios be driven apart instead of held in compromise. With an
+NADPH-linked AdhE, NADH/NAD⁺ falls to 0.010 — the 1:100 bound — while NADPH/NADP⁺ rises
+to 31, a ~3,000-fold separation. GAPDH and the terminal reductions can then both be given
+high driving force, using the ferredoxin surplus previously stranded at PFOR. The MDF
+rises from 0.77 to 6.57 kJ/mol.
+
+The MDF column tracks the NADH/NAD⁺ column monotonically across all 13 feasible
+pathways. Every pathway that decouples the terminal reductions from NADH — NfnAB plus
+NADPH-linked AdhE (mode 4), a ferredoxin-linked ADH (mode 9), or channeled NADPH-linked
+activities (mode 11) — drives NADH/NAD⁺ to the 1:100 bound and reaches ≈6.6 kJ/mol.
+Every pathway retaining NADH-linked terminal steps settles near NADH/NAD⁺ ≈ 1.9 and
+≈0.77 kJ/mol.
+
+> **On mode 4's bottleneck.** Its terminal steps sit 0.19–0.40 kJ/mol above the MDF, so
+> they are not formally binding (zero shadow price). Treat that gap with caution: the
+> optimum is degenerate, and re-solving with SCS instead of CLARABEL moves the
+> non-binding driving forces (aldhp 6.89 → 7.45) while the MDF stays at 6.5720. The
+> binding set is well determined; the exact position of everything else is not.
 
 ### Sensitivity to ethanol titer
 
-Because the bottleneck differs, the two pathways respond very differently as ethanol
-accumulates (last cell of the notebook):
-
 | ethanol (mM) | M05 Cth WT adhE | M04 NFN + engineered AdhE |
 |---:|---:|---:|
-|   10 | 4.35 | 7.26 |
-|  100 | 3.39 | 7.26 |
-|  500 | 2.73 | 7.26 |
-| 1000 | 2.44 | 7.26 |
-| 1500 | 2.28 | 7.26 |
-| 2000 | 2.16 | 7.26 |
-| 2500 | 2.07 | 7.26 |
+|   10 | 2.96 | 6.57 |
+|  100 | 2.01 | 6.57 |
+|  500 | 1.34 | 6.57 |
+| 1000 | 1.06 | 6.57 |
+| 1500 | 0.89 | 6.57 |
+| 2000 | 0.77 | 6.57 |
+| 2500 | 0.68 | 6.57 |
 
-The MDF of the NFN pathway is entirely independent of the ethanol concentration: its
-bottleneck is upper glycolysis, and the terminal steps retain enough driving force that
-raising the titer does not make them limiting. In the wild-type pathway the ALDH and ADH
-steps *are* the bottleneck, so every increase in ethanol is paid for directly out of the
-pathway's driving force. Thermodynamically, the engineered pathway removes ethanol titer
-as a constraint on the ethanol pathway itself.
+The MDF of the NFN pathway is independent of ethanol concentration, because its terminal
+steps draw on a separate, highly reduced NADPH pool and have driving force to spare. In
+the wild-type pathway the ALDH and ADH steps are part of the bottleneck, so every
+increase in ethanol is paid for directly out of the pathway's driving force.
+
+### Net ΔrG′° is identical within a stoichiometry class
+
+Every 2-ATP pathway has a net Δ*r*G′° of −151.55 kJ/mol and both 3-ATP (RNF) pathways
+−119.93 kJ/mol, as they must, since they catalyse the same overall conversion. The
+cumulative Δ*r*G′ at the *optimum* still differs slightly between pathways, but only
+through the ATP/ADP ratio — the one species in the net reaction that is not pinned by the
+concentration bounds. Pathways that settle at ATP/ADP = 1.0 all end at exactly
+−182.35 kJ/mol.
+
+(With `dg_confidence > 0` this is no longer true: the optimizer picks a different Δ*r*G′°
+assignment within the confidence ellipsoid for each pathway, shifting the net Δ*r*G′° by
+as much as +28 kJ/mol. That is one reason the point estimates are used here.)
+
+### Effect of the ΔrG′° uncertainty
+
+For reference, the same pathways scored with `dg_confidence = 0.95`:
+
+| Mode | point estimate | 95% ellipsoid | inflation |
+|-----:|---------------:|--------------:|----------:|
+|  4 | 6.57 | 7.26 | +0.69 |
+| 11 | 6.57 | 7.24 | +0.67 |
+|  9 | 6.54 | 7.22 | +0.68 |
+|  3 | 3.11 | 4.79 | +1.68 |
+|  2 | 2.64 | 4.80 | +2.16 |
+|  7 | 2.15 | 3.25 | +1.10 |
+|  8 | 1.61 | 2.46 | +0.85 |
+| 10 | 0.92 | 2.59 | +1.67 |
+|  1 | 0.77 | 2.20 | +1.43 |
+|  5 | 0.77 | 2.16 | +1.39 |
+| 12 | 0.77 | 2.12 | +1.35 |
+| 13 | 0.77 | 2.16 | +1.39 |
+| 14 | 0.66 | 1.88 | +1.22 |
+|  6 | −1.59 | 2.97 | +4.56 |
+| 15 | −1.59 | 4.08 | +5.67 |
+
+Because the optimizer maximizes over the ellipsoid, enabling it always raises the MDF,
+and it raises the weakest pathways most — turning both infeasible malate-shunt modes
+feasible. Point estimates are used to avoid reporting a best-case bound as if it were the
+expected value.
 
 ## References
 

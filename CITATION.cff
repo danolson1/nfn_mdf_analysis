@@ -24,5 +24,5 @@ keywords:
   - ethanol
   - eQuilibrator
 # Fill in once the repository and Zenodo record exist:
-# repository-code: "https://github.com/<user>/mdf-ethanol-pathways"
+repository-code: "https://github.com/danolson1/nfn_mdf_analysis"
 # doi: "10.5281/zenodo.XXXXXXX"
