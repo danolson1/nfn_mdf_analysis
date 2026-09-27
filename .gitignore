@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.DS_Store
+
+# Excel lock files
+~$*.xlsx
+
+# results/ is committed on purpose so the repo can be read without running anything.
+# Uncomment to treat it as scratch:
+#results/

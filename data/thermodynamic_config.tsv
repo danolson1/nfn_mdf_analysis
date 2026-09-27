@@ -1,0 +1,7 @@
+Option	Value	Comment
+algorithm	MDF	MDF (Max-min Driving Force) or ECM
+p_h	7.0 dimensionless	assumed intracellular pH
+ionic_strength	0.25 molar	assumed intracellular ionic strength
+p_mg	3.0 dimensionless	free Mg2+ concentration as -log10(M)
+temperature	328 kelvin	55 C, the growth temperature of C. thermocellum and T. saccharolyticum
+stdev_factor	1.96	width of the confidence interval on the component-contribution dG'0 estimate, in standard deviations; 1.96 = 95%

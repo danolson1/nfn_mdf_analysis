@@ -1,0 +1,16 @@
+mode_id,name,mdf_kJ_per_mol,atp_per_glucose,n_reactions,bottleneck_reactions,net_reaction,nadh/nad,fdred/fdox,atp/adp,[acald] mM,[accoa] mM,nadph/nadp
+4,NFN-only pathway with engineered AdhE,7.26,2,14,"fba, tpi, gap, pgk, gpm, eno",2 adp + glc + 2 pi = 2 atp + 2 co2 + 2 etoh + 2 h2o,0.01,92.508,1.0,1.578,8.602,37.011
+11,Tsac NADPH substrate-channeling,7.24,2,13,"fba, tpi, gap, pgk, gpm, eno",2 adp + glc + 2 pi = 2 atp + 2 co2 + 2 etoh + 2 h2o,0.01,51.294,1.0,,3.95,15.665
+9,Tsac fd adh,7.22,2,13,"fba, tpi, gap, pgk, gpm, eno, aldh",2 adp + glc + 2 pi = 2 atp + 2 co2 + 2 etoh + 2 h2o,0.01,23.71,1.0,0.001,10.0,
+2,Tsac NADH+NADPH ethanologen,4.8,2,16,"fba, tpi, gap, bif-hyd, nfn, aldh, adhp",2 adp + glc + 2 pi = 2 atp + 2 co2 + 2 etoh + 2 h2o,0.128,55.22,1.258,0.168,10.0,100.0
+3,Tsac NADH+NADPH ethanologen fnorp,4.79,2,14,"fba, tpi, gap, aldh, adhp",2 adp + glc + 2 pi = 2 atp + 2 co2 + 2 etoh + 2 h2o,0.127,7.146,1.283,0.165,10.0,100.0
+15,Cth malate shunt FNORp adhp,4.08,2,16,"fba, tpi, gap, pgk, gpm, eno, pepck",2 adp + glc + 2 pi = 2 atp + 2 co2 + 2 etoh + 2 h2o,0.01,1.205,1.0,0.901,2.387,25.122
+7,PDC ethanol pathway,3.25,2,12,"fba, tpi, gap, adh",2 adp + glc + 2 pi = 2 atp + 2 co2 + 2 etoh + 2 h2o,0.763,,1.632,10.0,,
+6,Cth malate shunt adhp,2.97,3,16,"fba, tpi, gap, pgk, gpm, eno, pepck, aldh, adhp",3 adp + glc + 3 pi = 3 atp + 2 co2 + 2 etoh + 3 h2o,0.093,3.741,1.0,0.092,10.0,100.0
+10,Tsac NADH substrate-channeling,2.59,2,14,"fba, tpi, gap, aldh_adh",2 adp + glc + 2 pi = 2 atp + 2 co2 + 2 etoh + 2 h2o,1.079,2.655,1.832,,10.0,
+8,PDC Xhyd ethanol pathway,2.46,2,13,"fba, tpi, gap, xhyd, adhp",2 adp + glc + 2 pi = 2 atp + 2 co2 + 2 etoh + 2 h2o,1.488,,1.836,10.0,,0.634
+1,Tsac NADH ethanologen,2.2,2,15,"fba, tpi, gap, aldh, adh",2 adp + glc + 2 pi = 2 atp + 2 co2 + 2 etoh + 2 h2o,1.518,2.455,1.954,3.848,10.0,
+5,Cth ethanologen WT adhE,2.16,3,14,"fba, tpi, gap, aldh, adh",3 adp + glc + 3 pi = 3 atp + 2 co2 + 2 etoh + 3 h2o,1.528,26.857,1.787,3.775,10.0,
+13,PFOR FNOR ethanol pathway,2.16,2,14,"fba, tpi, gap, aldh, adh",2 adp + glc + 2 pi = 2 atp + 2 co2 + 2 etoh + 2 h2o,1.528,1.972,1.954,3.775,10.0,
+12,PDH ethanol pathway,2.12,2,13,"fba, tpi, gap, aldh, adh",2 adp + glc + 2 pi = 2 atp + 2 co2 + 2 etoh + 2 h2o,1.539,,1.961,3.701,10.0,
+14,PFOR FNOR Xhyd pathway,1.88,2,15,"fba, tpi, gap, xhyd, aldh, adhp",2 adp + glc + 2 pi = 2 atp + 2 co2 + 2 etoh + 2 h2o,1.956,2.085,2.035,5.625,10.0,1.074

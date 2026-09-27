@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite both the software and the paper it accompanies."
+title: "MDF analysis of ethanol production pathways in thermophilic anaerobes"
+abstract: >-
+  Max-min Driving Force (MDF) analysis of alternative glucose-to-ethanol pathways in
+  Clostridium thermocellum and Thermoanaerobacterium saccharolyticum, evaluated at high
+  ethanol titer, including routes that differ in how electrons are transferred from
+  reduced ferredoxin to NAD(P) and in the cofactor specificity of the aldehyde and
+  alcohol dehydrogenase steps.
+authors:
+  - family-names: Olson
+    given-names: Daniel G.
+    email: daniel.g.olson@dartmouth.edu
+    affiliation: Dartmouth College
+license: MIT
+version: 1.0.0
+date-released: 2025-09-27
+keywords:
+  - thermodynamics
+  - max-min driving force
+  - metabolic engineering
+  - Clostridium thermocellum
+  - Thermoanaerobacterium saccharolyticum
+  - ethanol
+  - eQuilibrator
+# Fill in once the repository and Zenodo record exist:
+# repository-code: "https://github.com/<user>/mdf-ethanol-pathways"
+# doi: "10.5281/zenodo.XXXXXXX"

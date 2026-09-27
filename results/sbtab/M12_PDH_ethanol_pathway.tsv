@@ -1,0 +1,106 @@
+!!!SBtab DocumentName='PDH ethanol pathway' SBtabVersion='1.0' Date='2026-9-27'
+!!SBtab TableID='Configuration' TableType='Config' TableName='Configuration' SBtabVersion='1.0'
+!Option	!Value	!Comment
+algorithm	MDF	MDF (Max-min Driving Force) or ECM
+p_h	7.0 dimensionless	assumed intracellular pH
+ionic_strength	0.25 molar	assumed intracellular ionic strength
+p_mg	3.0 dimensionless	free Mg2+ concentration as -log10(M)
+temperature	328 kelvin	55 C, the growth temperature of C. thermocellum and T. saccharolyticum
+stdev_factor	1.96	width of the confidence interval on the component-contribution dG'0 estimate, in standard deviations; 1.96 = 95%
+
+!!SBtab TableID='Reaction' TableType='Reaction' TableName='Reaction' SBtabVersion='1.0'
+!ID	!ReactionFormula
+glk	glc + atp <=> g6p + adp
+pgi	g6p <=> f6p
+pfk	atp + f6p <=> adp + fbp
+fba	fbp <=> dhap + g3p
+tpi	dhap <=> g3p
+gap	pi + nad + g3p <=> nadh + bpg
+pgk	bpg + adp <=> 3pg + atp
+gpm	3pg <=> 2pg
+eno	2pg <=> pep + h2o
+pyk	adp + pep <=> atp + pyr
+pdh	pyr + coa + nad <=> accoa + nadh + co2
+aldh	accoa + nadh <=> coa + acald + nad
+adh	acald + nadh <=> nad + etoh
+
+!!SBtab TableID='Compound' TableType='Compound' TableName='Compound' SBtabVersion='1.0'
+!ID	!Name	!Identifiers
+glc	glucose	kegg:C00031
+g6p	glucose-6-phosphate	kegg:C00092
+f6p	fructose-6-phosphate	kegg:C00085
+fbp	fructose-1,6-bisphosphate	kegg:C00354
+dhap	dihydroxyacetonephosphate	kegg:C00111
+g3p	glycerol-3-phophate	kegg:C00118
+bpg	bisphosphoglycerate	kegg:C00236
+3pg	3-phosphoglycerate	kegg:C00197
+2pg	2-phosphoglycerate	kegg:C00631
+pep	phosphoenolpyruvate	kegg:C00074
+oaa	oxaloacetate	kegg:C00036
+mal	malate	kegg:C00149
+pyr	pyruvate	kegg:C00022
+accoa	acetyl-coa	kegg:C00024
+coa	coa	kegg:C00010
+acald	acetaldehyde	kegg:C00084
+etoh	ethanol	kegg:C00469
+nadph	nadph	kegg:C00005
+nadp	nadp	kegg:C00006
+nadh	nadh	kegg:C00004
+nad	nad	kegg:C00003
+fdred	reduced ferredoxin	kegg:C00138
+fdox	oxidized ferredoxin	kegg:C00139
+atp	atp	kegg:C00002
+adp	adp	kegg:C00008
+pi	phosphate	kegg:C00009
+h2o	water	kegg:C00001
+h2	hydrogen	kegg:C00282
+co2	carbon dioxide	kegg:C00011
+
+!!SBtab TableID='Flux' TableType='Quantity' TableName='Flux' SBtabVersion='1.0' Unit='dimensionless'
+!QuantityType	!Reaction	!Value
+rate of reaction	glk	1.0
+rate of reaction	pgi	1.0
+rate of reaction	pfk	1.0
+rate of reaction	fba	1.0
+rate of reaction	tpi	1.0
+rate of reaction	gap	2.0
+rate of reaction	pgk	2.0
+rate of reaction	gpm	2.0
+rate of reaction	eno	2.0
+rate of reaction	pyk	2.0
+rate of reaction	pdh	2.0
+rate of reaction	aldh	2.0
+rate of reaction	adh	2.0
+
+!!SBtab TableID='ConcentrationConstraint' TableType='Quantity' TableName='ConcentrationConstraint' SBtabVersion='1.0' Unit='mM'
+!QuantityType	!Compound	!Min	!Max
+concentration	glc	10.0	10.0
+concentration	g6p	0.001	10.0
+concentration	f6p	0.001	10.0
+concentration	fbp	0.001	10.0
+concentration	dhap	0.001	10.0
+concentration	g3p	0.001	10.0
+concentration	bpg	0.001	10.0
+concentration	3pg	0.001	10.0
+concentration	2pg	0.001	10.0
+concentration	pep	0.001	10.0
+concentration	oaa	0.001	10.0
+concentration	mal	0.001	10.0
+concentration	pyr	0.001	10.0
+concentration	accoa	0.001	10.0
+concentration	coa	1.0	1.0
+concentration	acald	0.001	10.0
+concentration	etoh	2000.0	2000.0
+concentration	nadph	0.001	10.0
+concentration	nadp	0.1	0.1
+concentration	nadh	0.001	10.0
+concentration	nad	0.1	0.1
+concentration	fdred	0.001	10.0
+concentration	fdox	0.1	0.1
+concentration	atp	0.1	10.0
+concentration	adp	0.1	0.1
+concentration	pi	10.0	10.0
+concentration	h2o	55000.0	55000.0
+concentration	h2	0.01	0.01
+concentration	co2	0.001	0.001
+

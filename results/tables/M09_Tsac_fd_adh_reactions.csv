@@ -1,0 +1,14 @@
+reaction_id,reaction_formula,flux,original_standard_dg_prime,standard_dg_prime,physiological_dg_prime,optimized_dg_prime,shadow_price
+glk,atp + glc = adp + g6p,1.0 dimensionless,-22.531522177174907 kilojoule / mole,-22.37862523642698 kilojoule / mole,-22.37862523642698 kilojoule / mole,-23.394309260621394 kilojoule / mole,0.0
+pgi,g6p = f6p,1.0 dimensionless,2.6625474910579783 kilojoule / mole,2.7973119007844964 kilojoule / mole,2.7973119007844964 kilojoule / mole,-8.132640404592518 kilojoule / mole,0.0
+pfk,atp + f6p = adp + fbp,1.0 dimensionless,-20.83358175541133 kilojoule / mole,-20.171167443655296 kilojoule / mole,-20.171167443655296 kilojoule / mole,-8.22553112354974 kilojoule / mole,0.0
+fba,fbp = dhap + g3p,1.0 dimensionless,24.042269039866397 kilojoule / mole,22.607587983579897 kilojoule / mole,5.492750448858864 kilojoule / mole,-7.220474698550241 kilojoule / mole,0.09731
+tpi,dhap = g3p,1.0 dimensionless,5.615869798610646 kilojoule / mole,4.124026351233015 kilojoule / mole,4.124026351233015 kilojoule / mole,-7.220474698516368 kilojoule / mole,0.09731
+gap,g3p + nad + pi = bpg + nadh,2.0 dimensionless,-0.9052422461268463 kilojoule / mole,-1.1120151279240926 kilojoule / mole,16.00282240679694 kilojoule / mole,-7.220474695441078 kilojoule / mole,0.19463
+pgk,adp + bpg = 3pg + atp,2.0 dimensionless,-19.055097833663694 kilojoule / mole,-19.43101539134148 kilojoule / mole,-19.43101539134148 kilojoule / mole,-7.220474695473035 kilojoule / mole,0.19463
+gpm,3pg = 2pg,2.0 dimensionless,4.560172068989004 kilojoule / mole,3.863172189086945 kilojoule / mole,3.863172189086945 kilojoule / mole,-7.220474695450222 kilojoule / mole,0.19463
+eno,2pg = h2o + pep,2.0 dimensionless,-3.764242131064748 kilojoule / mole,-4.263593102384752 kilojoule / mole,-4.263593102384752 kilojoule / mole,-7.220474695465581 kilojoule / mole,0.19463
+pyk,adp + pep = atp + pyr,2.0 dimensionless,-22.553526805402257 kilojoule / mole,-22.235423687931313 kilojoule / mole,-22.235423687931313 kilojoule / mole,-10.353987464459564 kilojoule / mole,0.0
+pfor,coa + 2 fdox + pyr = accoa + co2 + 2 fdred,2.0 dimensionless,-21.580326883058774 kilojoule / mole,-19.783572450952523 kilojoule / mole,-19.783572450952523 kilojoule / mole,-10.272184951986103 kilojoule / mole,0.0
+aldh,accoa + nadh = acald + coa + nad,2.0 dimensionless,22.13966693289757 kilojoule / mole,21.304254473258734 kilojoule / mole,4.189416938537699 kilojoule / mole,-7.220474713476621 kilojoule / mole,0.02686
+adhfd,acald + 2 fdred = etoh + 2 fdox,2.0 dimensionless,-29.095574660403315 kilojoule / mole,-29.686376100027694 kilojoule / mole,-29.686376100027694 kilojoule / mole,-9.427219125771918 kilojoule / mole,0.0

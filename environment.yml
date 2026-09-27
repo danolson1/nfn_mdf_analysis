@@ -1,0 +1,16 @@
+# Conda environment for the MDF analysis.
+#
+#   conda env create -f environment.yml
+#   conda activate mdf-ethanol
+#
+# Only Python itself comes from conda; the eQuilibrator stack is pip-installed because
+# it is not packaged for conda-forge. Versions are pinned to those used to produce the
+# published figures (see README.md).
+name: mdf-ethanol
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+      - -r requirements.txt
