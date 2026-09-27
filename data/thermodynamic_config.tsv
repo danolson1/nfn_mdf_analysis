@@ -4,4 +4,6 @@ p_h	7.0 dimensionless	assumed intracellular pH
 ionic_strength	0.25 molar	assumed intracellular ionic strength
 p_mg	3.0 dimensionless	free Mg2+ concentration as -log10(M)
 temperature	328 kelvin	55 C, the growth temperature of C. thermocellum and T. saccharolyticum
-stdev_factor	1.96	width of the confidence interval on the component-contribution dG'0 estimate, in standard deviations; 1.96 = 95%
+dg_confidence	0.95	dG'0 is allowed to vary within a 95% chi-squared confidence ellipsoid of the component-contribution covariance; the MDF reported is the worst case over that ellipsoid
+ln_conc_confidence	0.95	confidence level at which the concentration bounds are applied; with min/max bounds read from a file this reproduces them exactly
+stdev_factor	1.96	LEGACY. Carried over from the original SBtab files. equilibrator-pathway 0.8.1 does not use this option for MDF (only a TODO in the ECM code path); dg_confidence controls the dG'0 uncertainty instead. 1.96 SD is the same 95% interval, so the intent is unchanged.

@@ -42,9 +42,12 @@ results/
 
 `data/ethanol_pathway_model.xlsx` holds the whole model in two sheets.
 
-**`Reaction`** lists 30 reactions (glycolysis, the malate shunt, four pyruvate-oxidizing
-options, six ferredoxin/NAD(P) electron-transfer options, and six aldehyde/alcohol
-dehydrogenase options) with their formulas. To the right is a block of flux columns, one
+**`Reaction`** lists 30 reactions with their formulas: glycolysis (10), the malate shunt
+(3), three pyruvate-oxidizing options (PFOR, PDC, PDH), seven ferredoxin/NAD(P)
+electron-transfer options (RNF, bifurcating hydrogenase, ferredoxin-only hydrogenase,
+NfnAB, NADH- and NADPH-linked ferredoxin:NAD(P) oxidoreductases, and a pyridine
+nucleotide transhydrogenase), and seven aldehyde/alcohol dehydrogenase options differing
+in cofactor specificity and in whether acetaldehyde is channeled. To the right is a block of flux columns, one
 per pathway. Each column is an elementary flux mode: a stoichiometrically balanced route
 from 1 glucose to 2 ethanol. A blank cell means the reaction carries no flux in that
 pathway and is dropped before solving. The header rows of each column record the mode ID,
@@ -73,14 +76,25 @@ Fifteen pathways are defined:
 | 14 | PFOR FNOR Xhyd pathway | 2 |
 | 15 | Cth malate shunt FNORp adhp | 2 |
 
-The four *T. saccharolyticum* modes (1, 2, 10, 11) use **hydrogen cycling** to move
-electrons from ferredoxin to NAD: the ferredoxin-only hydrogenase (`hyd`) evolves H₂,
-and the bifurcating hydrogenase (`bif-hyd`) runs in the reverse (H₂-consuming) direction
-to reduce NAD⁺, giving a net Fd:NAD transhydrogenation. This is entered in the workbook
-as a negative flux on `bif-hyd`. Because the intermediate H₂ pool is explicit, the
-assumed H₂ concentration (0.01 mM) directly controls how much driving force this route
-costs — above roughly 2 mM H₂ it becomes thermodynamically equivalent to a direct
-NADH-linked ferredoxin:NAD oxidoreductase.
+### Hydrogen cycling
+
+Modes **1, 2 and 10** use **hydrogen cycling** to move electrons from ferredoxin to NAD,
+as *T. saccharolyticum* does: the ferredoxin-only hydrogenase (`hyd`) evolves H₂, and the
+electron-bifurcating hydrogenase (`bif-hyd`) runs in the reverse, H₂-consuming direction
+to reduce NAD⁺, giving a net Fd:NAD transhydrogenation with H₂ as a freely diffusing
+intermediate. The reverse direction is entered in the workbook as a negative flux on
+`bif-hyd`. For mode 1, for example, PFOR produces 4 reduced ferredoxin, `hyd` (flux 4)
+consumes 8, and `bif-hyd` (flux −2) regenerates 4 while reducing 2 NAD⁺ — balanced in
+both ferredoxin and H₂.
+
+Because the intermediate H₂ pool is explicit, the assumed H₂ concentration (0.01 mM)
+directly controls how much driving force this route costs; above roughly 2 mM H₂ it
+becomes thermodynamically equivalent to a direct NADH-linked ferredoxin:NAD
+oxidoreductase.
+
+Modes 9 and 11 are named for *T. saccharolyticum* but do **not** use hydrogen cycling —
+mode 9 uses a ferredoxin-linked ADH directly, and mode 11 uses NfnAB with a channeled
+NADPH-linked ALDH/ADH.
 
 ### Conditions
 
@@ -92,7 +106,16 @@ All pathways are evaluated under one set of conditions (`data/thermodynamic_conf
 | ionic strength | 0.25 M |
 | pMg | 3.0 |
 | temperature | 328 K (55 °C) |
-| stdev_factor | 1.96 (95% CI on ΔrG′° ) |
+| dg_confidence | 0.95 |
+| ln_conc_confidence | 0.95 |
+
+ΔrG′° values are not treated as point estimates: the linear program lets them vary within
+a 95% chi-squared confidence ellipsoid of the component-contribution covariance matrix,
+and the reported MDF is the worst case over that ellipsoid. The `stdev_factor = 1.96` row
+inherited from the original SBtab files is retained for provenance but is **inert** —
+equilibrator-pathway 0.8.1 does not read it in the MDF code path. It encodes the same
+95% interval, so the intent is unchanged, and setting `dg_confidence` explicitly gives
+the same numbers as the defaults.
 
 Concentrations are free to vary between 0.001 and 10 mM except where fixed to represent a
 boundary condition or a buffered pool: glucose 10 mM, **ethanol 2000 mM**, phosphate
