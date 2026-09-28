@@ -108,5 +108,5 @@ concentration	adp	0.1	0.1
 concentration	pi	10.0	10.0
 concentration	h2o	55000.0	55000.0
 concentration	h2	0.01	0.01
-concentration	co2	10.0	10.0
+concentration	co2	0.001	10.0
 
