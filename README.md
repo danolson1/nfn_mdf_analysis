@@ -56,6 +56,44 @@ the ATP yield per glucose, and the pathway name.
 **`Compound`** lists the 30 metabolites with KEGG identifiers and the lower/upper
 concentration bounds used in the linear program.
 
+### Reactions
+
+The reaction IDs below are what appear on the horizontal axis of every driving-force
+plot. The workbook is authoritative for the formulas; this table adds the enzyme names.
+
+| ID | Enzyme | Gene | Formula |
+|---|---|---|---|
+| `glk` | glucokinase | | glc + atp ⇌ g6p + adp |
+| `pgi` | phosphoglucose isomerase | | g6p ⇌ f6p |
+| `pfk` | phosphofructokinase | | atp + f6p ⇌ adp + fbp |
+| `fba` | fructose-bisphosphate aldolase | | fbp ⇌ dhap + g3p |
+| `tpi` | triose-phosphate isomerase | | dhap ⇌ g3p |
+| `gap` | glyceraldehyde-3-phosphate dehydrogenase | | pi + nad + g3p ⇌ nadh + bpg |
+| `pgk` | phosphoglycerate kinase | | bpg + adp ⇌ 3pg + atp |
+| `gpm` | phosphoglycerate mutase | | 3pg ⇌ 2pg |
+| `eno` | enolase | | 2pg ⇌ pep + h2o |
+| `pyk` | pyruvate kinase | | adp + pep ⇌ atp + pyr |
+| `pepck` | PEP carboxykinase | | pep + adp + co2 ⇌ oaa + atp |
+| `mdh` | malate dehydrogenase | | oaa + nadh ⇌ nad + mal |
+| `mae` | malic enzyme (NADP-linked) | | mal + nadp ⇌ nadph + pyr + co2 |
+| `pfor` | pyruvate:ferredoxin oxidoreductase | `pforA` | coa + pyr + 2 fdox ⇌ accoa + co2 + 2 fdred |
+| `pdc` | pyruvate decarboxylase | | pyr ⇌ acald + co2 |
+| `pdh` | pyruvate dehydrogenase | | pyr + coa + nad ⇌ accoa + nadh + co2 |
+| `rnf` | Rnf ferredoxin:NAD⁺ oxidoreductase (ion-translocating) | `rnf` | 2 fdred + nad + 0.5 adp + 0.5 pi ⇌ 0.5 atp + 0.5 h2o + nadh + 2 fdox |
+| `bif-hyd` | electron-bifurcating hydrogenase | `hydA` | 2 fdred + nadh ⇌ 2 fdox + 2 h2 + nad |
+| `hyd` | ferredoxin-only hydrogenase | `hfsD` | 2 fdred ⇌ 2 fdox + h2 |
+| `nfn` | NfnAB electron-bifurcating transhydrogenase | `nfnAB` | 2 fdred + nadh + 2 nadp ⇌ 2 nadph + nad + 2 fdox |
+| `fnor` | ferredoxin:NAD⁺ oxidoreductase | | 2 fdred + nad ⇌ nadh + 2 fdox |
+| `fnorp` | ferredoxin:NADP⁺ oxidoreductase | `nfnB` alone, `cac_0764` | 2 fdred + nadp ⇌ nadph + 2 fdox |
+| `xhyd` | pyridine nucleotide transhydrogenase | | nadh + nadp ⇌ nadph + nad |
+| `aldh` | acetaldehyde dehydrogenase, NADH-linked | `adhE` WT | accoa + nadh ⇌ coa + acald + nad |
+| `aldhp` | acetaldehyde dehydrogenase, NADPH-linked | `adhE` PROSS | accoa + nadph ⇌ coa + acald + nadp |
+| `adh` | alcohol dehydrogenase, NADH-linked | `adhE` WT | acald + nadh ⇌ nad + etoh |
+| `adhp` | alcohol dehydrogenase, NADPH-linked | `adhE` mutants, `adhA` | acald + nadph ⇌ nadp + etoh |
+| `adhfd` | alcohol dehydrogenase, ferredoxin-linked | | acald + 2 fdred ⇌ 2 fdox + etoh |
+| `aldh_adh` | channeled ALDH/ADH, NADH-linked | `adhE` with substrate channeling | accoa + 2 nadh ⇌ coa + 2 nad + etoh |
+| `aldhp_adhp` | channeled ALDH/ADH, NADPH-linked | `adhE` with substrate channeling | accoa + 2 nadph ⇌ coa + 2 nadp + etoh |
+
 Fifteen pathways are defined:
 
 | Mode | Pathway | ATP/glucose |
