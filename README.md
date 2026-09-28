@@ -152,8 +152,7 @@ non-zero value, equilibrator-pathway treats the ΔrG′° vector as a *decision 
 constrained to that confidence ellipsoid of the component-contribution covariance matrix
 and **maximizes** over it — so the result is a best-case bound, not a worst-case one, and
 not the expected value. At the library default of 0.95 it inflates every MDF here by
-0.7–5.7 kJ/mol and makes two infeasible pathways appear feasible; see "Effect of the
-ΔrG′° uncertainty" under Results.
+0.7–5.7 kJ/mol and makes both infeasible malate-shunt pathways appear feasible.
 
 `ln_conc_confidence` is left at its default of 0.95; with explicit min/max bounds read
 from a model file it reproduces those bounds exactly and has no other effect.
@@ -197,29 +196,12 @@ those reproducible too:
 SOURCE_DATE_EPOCH=1727395200 python run_mdf_analysis.py
 ```
 
-### Figure fonts
-
-`mdf_pathways` sets `pdf.fonttype` and `ps.fonttype` to 42 on import, so vector output
-embeds real TrueType fonts (PDF Type0/CIDFontType2 with a ToUnicode CMap, leaving the text
-selectable and searchable). Matplotlib's default of type 3 writes each glyph as drawing
-operations and is rejected by several publishers, including Elsevier, IEEE and ACS. Text
-uses matplotlib's default DejaVu Sans at a 10 pt base size; set `font.family` and
-`font.sans-serif` if a target journal requires a particular typeface.
-
 Pinned versions are in `requirements.txt`. The results were produced with
 equilibrator-api 0.8.1 and Python 3.12.14 on Windows 11. `equilibrator-cache-data` ships
 the component-contribution training data as a Python package, so no download is needed on
 first use. The MDF linear program is solved through CVXPY; `equilibrator-pathway`
 defaults to the CLARABEL solver, which can be overridden by adding a `solver` row to
 `thermodynamic_config.tsv`.
-
-### A note on editing the workbook
-
-The flux block mirrors the reaction IDs from column C using Excel formulas. Saving the
-workbook with a Python library such as `openpyxl` discards the cached values of those
-formulas and leaves the column blank. Edit the workbook in Excel, not from Python. (The
-parser reads reaction IDs from the `rxn` block and aligns fluxes by row, so it is
-unaffected either way — but other tools may not be.)
 
 ## Results
 
@@ -325,33 +307,6 @@ concentration bounds. Pathways that settle at ATP/ADP = 1.0 all end at exactly
 assignment within the confidence ellipsoid for each pathway, shifting the net Δ*r*G′° by
 as much as +28 kJ/mol. That is one reason the point estimates are used here.)
 
-### Effect of the ΔrG′° uncertainty
-
-For reference, the same pathways scored with `dg_confidence = 0.95`:
-
-| Mode | point estimate | 95% ellipsoid | inflation |
-|-----:|---------------:|--------------:|----------:|
-|  4 | 6.57 | 7.26 | +0.69 |
-| 11 | 6.57 | 7.24 | +0.67 |
-|  9 | 6.54 | 7.22 | +0.68 |
-|  3 | 3.11 | 4.79 | +1.68 |
-|  2 | 2.64 | 4.80 | +2.16 |
-|  7 | 2.15 | 3.25 | +1.10 |
-|  8 | 1.61 | 2.46 | +0.85 |
-| 10 | 0.92 | 2.59 | +1.67 |
-|  1 | 0.77 | 2.20 | +1.43 |
-|  5 | 0.77 | 2.16 | +1.39 |
-| 12 | 0.77 | 2.12 | +1.35 |
-| 13 | 0.77 | 2.16 | +1.39 |
-| 14 | 0.66 | 1.88 | +1.22 |
-|  6 | −1.59 | 2.97 | +4.56 |
-| 15 | −1.59 | 4.08 | +5.67 |
-
-Because the optimizer maximizes over the ellipsoid, enabling it always raises the MDF,
-and it raises the weakest pathways most — turning both infeasible malate-shunt modes
-feasible. Point estimates are used to avoid reporting a best-case bound as if it were the
-expected value.
-
 ## References
 
 - Noor E, Bar-Even A, Flamholz A, Reznik E, Liebermeister W, Milo R (2014). Pathway
@@ -366,9 +321,13 @@ expected value.
 
 ## Citing this work
 
-Archived at Zenodo on each GitHub release. Machine-readable metadata is in
-`CITATION.cff` and `.zenodo.json`; GitHub's "Cite this repository" button reads the
-former. The concept DOI is added here once the first release is archived.
+Please cite the paper:
+
+> [CITATION TO BE ADDED]
+
+Each GitHub release is archived at Zenodo, so cite the archive instead only if you need
+to refer to the code or data specifically, or to a particular version of it. The DOI will
+be added here once the first release is archived.
 
 ## License
 
