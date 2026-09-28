@@ -140,6 +140,14 @@ Modes 9 and 11 are named for *T. saccharolyticum* but do **not** use hydrogen cy
 mode 9 uses a ferredoxin-linked ADH directly, and mode 11 uses NfnAB with a channeled
 NADPH-linked ALDH/ADH.
 
+> **On the channeled modes.** Modes 10 and 11 assume acetaldehyde is transferred directly
+> between the two domains of AdhE. Fabri et al. (2025) call that substrate channeling into
+> question, so those two modes should be read as an upper bound on what channeling could
+> buy rather than as a description of the enzyme as it is. The same paper notes that the
+> route from reduced ferredoxin to NAD(P)⁺, and which cofactor ALDH and ADH use in vivo,
+> both remain open questions — the *T. saccharolyticum* modes here are hypotheses about
+> that, not settled fact.
+
 ### Conditions
 
 All pathways are evaluated under one set of conditions (`data/thermodynamic_config.tsv`):
@@ -330,10 +338,14 @@ NADH/NAD⁺ from 0.43 to 2.00 and charges every increment to GAPDH. An NADPH-lin
 does not compete for that pool.
 
 The same script handles any pathway pair, e.g. `--modes 5 4` for the native
-*C. thermocellum* route against NfnAB with an engineered AdhE. Fabri et al. (2025) report that
-NADPH-linked rather than NADH-linked ADH activity increases ethanol tolerance, which is
-the direction this predicts; titer data are not yet available, and the two are not
-interchangeable.
+*C. thermocellum* route against NfnAB with an engineered AdhE. This offers a thermodynamic rationale for
+the finding of Fabri et al. (2025) that AdhE mutations which disrupt the ADH domain, and
+so reduce NADH-linked ADH activity, dramatically increase ethanol tolerance. Those
+mutations do not change AdhE's cofactor specificity — none of the variants showed
+substantial NADPH-linked activity — but by removing the NADH-linked route they leave
+ethanol production to an NADPH-linked ADH, moving the organism from mode 1 toward mode 2.
+Note that the measured effect is on *tolerance*; titer data are not yet available, and
+the two are not interchangeable.
 
 ### How each pathway re-poises its cofactors as product accumulates
 
@@ -413,6 +425,9 @@ as much as +28 kJ/mol. That is one reason the point estimates are used here.)
   Lynd LR (2017). Metabolome analysis reveals a role for glyceraldehyde 3-phosphate
   dehydrogenase in the inhibition of *C. thermocellum* by ethanol.
   *Biotechnol Biofuels* 10:276. doi:10.1186/s13068-017-0961-3
+- Fabri JHTM, Pech-Canul A, Ziegler SJ, Burgin TE, Richardson ID, Maloney MI, Bomble YJ,
+  Lynd LR, Olson DG (2025). The role of AdhE mutations in *Thermoanaerobacterium
+  saccharolyticum*. *Journal of Bacteriology*. doi:10.1128/jb.00015-25
 - Dash S, Olson DG, Joshua Chan SH, Amador-Noguez D, Lynd LR, Maranas CD (2019).
   Thermodynamic analysis of the pathway for ethanol production from cellobiose in
   *Clostridium thermocellum*. *Metabolic Engineering* 55:161–169.
