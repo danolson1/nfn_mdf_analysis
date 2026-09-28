@@ -168,14 +168,30 @@ handling.
 
 Concentrations are free to vary between 0.001 and 10 mM except where fixed to represent a
 boundary condition or a buffered pool: glucose 10 mM, **ethanol 2000 mM**, phosphate
-10 mM, CoA 1 mM, NAD⁺ / NADP⁺ / ADP / oxidized ferredoxin 0.1 mM, H₂ 0.01 mM, CO₂
-0.001 mM, water 55 M. Holding the oxidized partner of each redox pair fixed while letting
+10 mM, CoA 1 mM, NAD⁺ / NADP⁺ / ADP / oxidized ferredoxin 0.1 mM, H₂ 0.01 mM, **CO₂
+10 mM**, water 55 M. Holding the oxidized partner of each redox pair fixed while letting
 the reduced partner range over 0.001–10 mM constrains each cofactor ratio to between
 1:100 and 100:1; ATP is bounded at 0.1–10 mM, limiting ATP/ADP to 1:1–100:1.
 
-The H₂ and CO₂ values are deliberately low (see the Notes column of the `Compound`
-sheet): both are freely exchanged with the gas phase, and the chosen values illustrate
-how gas removal affects pathways that produce or consume them.
+**CO₂ is fixed at 10 mM**, approximating dissolved CO₂ in equilibrium with the
+fermentation gas phase. This matters for the malate shunt, whose first step (PEP
+carboxykinase) consumes CO₂. Dash et al. (2019) used a much lower value, at which the
+shunt is thermodynamically infeasible; but Olson et al. (2017) showed that a *ppdk*
+deletion strain of *C. thermocellum* still produces ethanol, which requires flux through
+the malate shunt, so the shunt must be feasible in vivo. At 10 mM both malate-shunt modes
+carry positive driving force.
+
+H₂ is fixed at 0.01 mM, low enough that hydrogen cycling costs driving force; above
+roughly 2 mM it becomes thermodynamically equivalent to a direct ferredoxin:NAD
+oxidoreductase.
+
+> **What the CO₂ value costs elsewhere.** CO₂ is a *product* of PFOR, PDC, PDH and malic
+> enzyme, so raising it from 0.001 to 10 mM removes ~25 kJ/mol of driving force from those
+> steps. The pathways limited at their terminal reductions are unaffected — modes 1, 5,
+> 12 and 13 stay at 0.77 kJ/mol — because PFOR had surplus to spare. The pathways that had
+> reached the upper-glycolysis limit lose ground and now have PFOR in their binding set:
+> mode 4 falls from 6.57 to 4.80, modes 9 and 11 from ~6.55 to 5.33. The engineered-versus-
+> native comparison is unchanged in direction and still large (0.77 vs 4.80 kJ/mol).
 
 ## Reproducing the analysis
 
@@ -213,73 +229,70 @@ MDF values use the component-contribution point estimates (`dg_confidence = 0`).
 
 | Mode | Pathway | ATP/glc | MDF (kJ/mol) | Bottleneck | NADH/NAD⁺ | NADPH/NADP⁺ |
 |-----:|---------|--------:|-------------:|------------|----------:|------------:|
-|  4 | NFN-only pathway with engineered AdhE | 2 | 6.57 | fba, tpi, gap, pgk, gpm, eno | 0.010 | 30.8 |
-| 11 | Tsac NADPH substrate-channeling | 2 | 6.57 | fba, tpi, gap, pgk, gpm, eno | 0.010 | 11.8 |
-|  9 | Tsac fd adh | 2 | 6.54 | fba, tpi, gap, pgk, gpm, eno, aldh | 0.011 | — |
+|  9 | Tsac fd adh | 2 | 5.33 | upper glycolysis → pfor, aldh, adhfd | 0.033 | — |
+| 11 | Tsac NADPH substrate-channeling | 2 | 5.33 | upper glycolysis → pfor, nfn, aldhp_adhp | 0.028 | 11.0 |
+|  4 | NFN-only pathway with engineered AdhE | 2 | 4.80 | fba → adhp (all steps) | 0.055 | 25.0 |
+| 15 | Cth malate shunt FNORp adhp | 2 | 4.00 | upper glycolysis, pepck, mdh, mae, pfor, fnorp, aldhp, adhp | 0.034 | 24.2 |
 |  3 | Tsac NADH+NADPH ethanologen fnorp | 2 | 3.11 | fba, tpi, gap, aldh, adhp | 0.296 | 100 |
 |  2 | Tsac NADH+NADPH ethanologen | 2 | 2.64 | fba, tpi, gap, bif-hyd, nfn, aldh, adhp | 0.430 | 47.2 |
 |  7 | PDC ethanol pathway | 2 | 2.15 | fba, tpi, gap, adh | 0.640 | — |
-|  8 | PDC Xhyd ethanol pathway | 2 | 1.61 | fba, tpi, gap, xhyd, adhp | 0.987 | 0.6 |
+|  8 | PDC Xhyd ethanol pathway | 2 | 1.61 | fba, tpi, gap, xhyd, adhp | 0.987 | 0.61 |
 | 10 | Tsac NADH substrate-channeling | 2 | 0.92 | fba, tpi, gap, aldh_adh | 1.721 | — |
+|  6 | Cth malate shunt adhp | 3 | 0.92 | mae, pfor, rnf, aldh, adhp | 0.257 | 43.0 |
 |  1 | Tsac NADH ethanologen | 2 | 0.77 | fba, tpi, gap, aldh, adh | 1.949 | — |
 |  5 | Cth ethanologen WT adhE | 3 | 0.77 | fba, tpi, gap, aldh, adh | 1.949 | — |
 | 12 | PDH ethanol pathway | 2 | 0.77 | fba, tpi, gap, aldh, adh | 1.949 | — |
 | 13 | PFOR FNOR ethanol pathway | 2 | 0.77 | fba, tpi, gap, aldh, adh | 1.949 | — |
-| 14 | PFOR FNOR Xhyd pathway | 2 | 0.66 | fba, tpi, gap, xhyd, aldh, adhp | 2.130 | 1.9 |
-|  6 | Cth malate shunt adhp | 3 | **−1.59** | pepck | 0.160 | 38.2 |
-| 15 | Cth malate shunt FNORp adhp | 2 | **−1.59** | pepck | 0.042 | 20.6 |
+| 14 | PFOR FNOR Xhyd pathway | 2 | 0.66 | fba, tpi, gap, xhyd, aldh, adhp | 2.130 | 1.93 |
 
-Both malate-shunt modes are infeasible at these conditions, blocked at PEP carboxykinase
-by the low CO₂ concentration (0.001 mM) — the effect noted by Dash et al. (2019).
+All fifteen pathways are thermodynamically feasible at these conditions.
 
 ### The bottleneck is shared between the two ends of the pathway
 
-"Upper glycolysis" is the fba/tpi/gap segment. It is binding in all 13 feasible
-pathways, but in 11 of them the terminal aldehyde and alcohol dehydrogenase steps are
-binding as well: the bottleneck is **shared**, not localized to glycolysis.
+"Upper glycolysis" is the fba/tpi/gap segment. It is binding in fourteen of the fifteen
+pathways, and in most of them the terminal aldehyde and alcohol dehydrogenase steps are
+binding as well: the bottleneck is **shared** between the two ends, not localized to
+glycolysis. (Mode 6 is the exception, limited instead at malic enzyme and the terminal
+steps.)
 
 The two ends limit together because they are coupled through a single cofactor ratio.
-GAPDH reduces NAD⁺, so its driving force rises as NADH/NAD⁺ falls; ALDH and ADH oxidize
+GAPDH reduces NAD⁺, so its driving force rises as NADH/NAD⁺ falls. ALDH and ADH oxidize
 NADH, so theirs rises as NADH/NAD⁺ rises. When all three draw on the same pool no value
 of the ratio satisfies both, and the optimum is the compromise at which they become
 limiting together — NADH/NAD⁺ = 1.95 in the native *C. thermocellum* pathway.
 
-### Excess driving force is trapped at PFOR
+### Driving force is unevenly distributed, and the coupling prevents levelling it
 
 The native pathway is not short of driving force overall. At its optimum (MDF 0.77):
 
 ```
-glk  29.03   fba   0.77 *  pgk   4.13   pyk  12.94   aldh  0.77 *
-pgi   5.66   tpi   0.77 *  gpm   2.35   pfor 13.93   adh   0.77 *
-pfk   9.51   gap   0.77 *  eno   4.56   rnf   3.95          (* = at the MDF)
+glk  28.00   fba   0.77 *  pgk   4.28   pyk   7.36   aldh  0.77 *
+pgi   5.52   tpi   0.77 *  gpm   2.33   pfor  1.93   adh   0.77 *
+pfk   8.94   gap   0.77 *  eno   3.91   rnf   1.41         (* = at the MDF)
 ```
 
-PFOR runs at 13.9 kJ/mol — eighteen times the MDF — with Fd(red)/Fd(ox) poised high.
-That surplus is **trapped**: RNF can only discharge it into NADH/NAD⁺, the very ratio
-GAPDH needs kept low, so moving more electrons into that pool relieves the terminal steps
-only by constraining GAPDH to the same degree.
+Several steps run at 4–28 kJ/mol while five sit at 0.77. That surplus cannot be moved to
+where it is needed. Any attempt to relieve ALDH and ADH by raising NADH/NAD⁺ is taken
+straight out of GAPDH, and vice versa, so the pathway is pinned at the compromise no
+matter how much driving force exists elsewhere.
 
 ### NfnAB unlocks it by separating the two redox ratios
 
 NfnAB reduces NADP⁺ at the expense of reduced ferredoxin *and* NADH, which lets the two
 pyridine nucleotide ratios be driven apart instead of held in compromise. With an
-NADPH-linked AdhE, NADH/NAD⁺ falls to 0.010 — the 1:100 bound — while NADPH/NADP⁺ rises
-to 31, a ~3,000-fold separation. GAPDH and the terminal reductions can then both be given
-high driving force, using the ferredoxin surplus previously stranded at PFOR. The MDF
-rises from 0.77 to 6.57 kJ/mol.
+NADPH-linked AdhE, NADH/NAD⁺ falls to 0.055 while NADPH/NADP⁺ rises to 25 — a ~450-fold
+separation. GAPDH and the terminal reductions can then both be given high driving force,
+and the MDF rises from 0.77 to 4.80 kJ/mol.
 
-The MDF column tracks the NADH/NAD⁺ column monotonically across all 13 feasible
-pathways. Every pathway that decouples the terminal reductions from NADH — NfnAB plus
-NADPH-linked AdhE (mode 4), a ferredoxin-linked ADH (mode 9), or channeled NADPH-linked
-activities (mode 11) — drives NADH/NAD⁺ to the 1:100 bound and reaches ≈6.6 kJ/mol.
-Every pathway retaining NADH-linked terminal steps settles near NADH/NAD⁺ ≈ 1.9 and
-≈0.77 kJ/mol.
+The result is a pathway with no localized bottleneck at all: every reaction from `fba`
+onward runs at exactly 4.80 kJ/mol. Where the native pathway wastes driving force it
+cannot redistribute, the engineered pathway spreads it evenly.
 
-> **On mode 4's bottleneck.** Its terminal steps sit 0.19–0.40 kJ/mol above the MDF, so
-> they are not formally binding (zero shadow price). Treat that gap with caution: the
-> optimum is degenerate, and re-solving with SCS instead of CLARABEL moves the
-> non-binding driving forces (aldhp 6.89 → 7.45) while the MDF stays at 6.5720. The
-> binding set is well determined; the exact position of everything else is not.
+The MDF column tracks the NADH/NAD⁺ column across the whole table. Every pathway that
+decouples the terminal reductions from NADH — by NfnAB plus an NADPH-linked AdhE (mode 4),
+a ferredoxin-linked ADH (mode 9), or channeled NADPH-linked activities (mode 11) — drives
+NADH/NAD⁺ below 0.06 and reaches 4.8–5.3 kJ/mol. Every pathway retaining NADH-linked
+terminal steps settles near NADH/NAD⁺ ≈ 1.9 and ≈ 0.77 kJ/mol.
 
 ### Sensitivity to ethanol titer
 
@@ -353,6 +366,17 @@ as much as +28 kJ/mol. That is one reason the point estimates are used here.)
 - Lubitz T, Hahn J, Bergmann FT, Noor E, Klipp E, Liebermeister W (2016). SBtab: a flexible
   table format for data exchange in systems biology. *Bioinformatics* 32:2559–2561.
   doi:10.1093/bioinformatics/btw179
+- Olson DG, Hörl M, Fuhrer T, Cui J, Zhou J, Maloney MI, Amador-Noguez D, Tian L, Sauer U,
+  Lynd LR (2017). Glycolysis without pyruvate kinase in *Clostridium thermocellum*.
+  *Metabolic Engineering* 39:169–180. doi:10.1016/j.ymben.2016.11.011
+- Tian L, Perot SJ, Stevenson D, Jacobson T, Lanahan AA, Amador-Noguez D, Olson DG,
+  Lynd LR (2017). Metabolome analysis reveals a role for glyceraldehyde 3-phosphate
+  dehydrogenase in the inhibition of *C. thermocellum* by ethanol.
+  *Biotechnol Biofuels* 10:276. doi:10.1186/s13068-017-0961-3
+- Dash S, Olson DG, Joshua Chan SH, Amador-Noguez D, Lynd LR, Maranas CD (2019).
+  Thermodynamic analysis of the pathway for ethanol production from cellobiose in
+  *Clostridium thermocellum*. *Metabolic Engineering* 55:161–169.
+  doi:10.1016/j.ymben.2019.06.006
 
 ## Citing this work
 

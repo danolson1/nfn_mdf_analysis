@@ -1,4 +1,4 @@
-!!!SBtab DocumentName='Tsac NADH+NADPH ethanologen fnorp' SBtabVersion='1.0' Date='2026-9-27'
+!!!SBtab DocumentName='Tsac NADH+NADPH ethanologen fnorp' SBtabVersion='1.0' Date='2026-9-28'
 !!SBtab TableID='Configuration' TableType='Config' TableName='Configuration' SBtabVersion='1.0'
 !Option	!Value	!Comment
 algorithm	MDF	MDF (Max-min Driving Force) or ECM
@@ -106,5 +106,5 @@ concentration	adp	0.1	0.1
 concentration	pi	10.0	10.0
 concentration	h2o	55000.0	55000.0
 concentration	h2	0.01	0.01
-concentration	co2	0.001	0.001
+concentration	co2	10.0	10.0
 
