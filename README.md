@@ -1,7 +1,5 @@
 # Thermodynamic (MDF) analysis of ethanol production pathways
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23004835.svg)](https://doi.org/10.5281/zenodo.23004835)
-
 Max-min Driving Force (MDF) analysis of alternative routes from glucose to ethanol in
 the thermophilic anaerobes *Clostridium thermocellum* and *Thermoanaerobacterium
 saccharolyticum*, evaluated at a high ethanol titer.
@@ -368,8 +366,9 @@ expected value.
 
 ## Citing this work
 
-Archived at Zenodo: <https://doi.org/10.5281/zenodo.23004835>. Machine-readable metadata
-is in `CITATION.cff`; GitHub's "Cite this repository" button reads it directly.
+Archived at Zenodo on each GitHub release. Machine-readable metadata is in
+`CITATION.cff` and `.zenodo.json`; GitHub's "Cite this repository" button reads the
+former. The concept DOI is added here once the first release is archived.
 
 ## License
 
