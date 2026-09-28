@@ -352,11 +352,24 @@ the two are not interchangeable.
 
 `python combined_figure.py` writes `combined_pathway_overview_part1.*` and `_part2.*` to
 `results/figures/`: one row per pathway, sorted by MDF at the reference titer, split
-seven rows and eight so each fits a US Letter page. Three panels across — the cumulative
-driving-force plot at 2 M ethanol, the MDF against ethanol titer, and the three redox
-ratios overlaid on one log axis against titer. The MDF panels share one vertical scale
-across every row and both pages, so heights are directly comparable. `--split 0` produces
-a single tall figure instead.
+seven rows and eight. Three panels across — the cumulative driving-force plot at 2 M
+ethanol, the MDF against ethanol titer, and the three redox ratios overlaid on one log
+axis against titer. The MDF panels share one vertical scale across every row and both
+pages, so heights are directly comparable, and each ratio panel carries its legend above
+the axes rather than inside, where a curve would eventually reach it.
+
+Pages are 6 x 11 in — narrower than the paper they sit on, which keeps the panels close
+to square and enlarges every label when the figure is scaled to a document's text width.
+
+`--modes` selects a subset, `--split 0` puts it all on one page, and `--name` sets the
+file stem. The six-pathway version used in the manuscript is
+
+```bash
+python combined_figure.py --modes 14 5 1 4 3 2 --split 0 --name selected_pathway_overview
+```
+
+which contrasts NADPH from NfnAB (M04, 6.57 kJ/mol) against NADPH from a
+transhydrogenase (M14, 0.66) and the NADH-linked routes in between.
 
 The top three rows (modes 11, 4 and 9) show the pattern the analysis turns on: the middle
 panel is a flat line, and in the right panel NADH/NAD⁺ sits pinned on the 1:100 bound

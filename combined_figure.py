@@ -47,9 +47,10 @@ MDF_COLOR = "#4a3aa7"
 
 RATIO_MIN, RATIO_MAX = 0.01, 100.0
 
-# US Letter, portrait. Rows are sized to fill the page, so the split has to be small
-# enough that the driving-force panel still has room for its rotated reaction labels.
-PAGE = (8.5, 11.0)
+# Portrait, narrower than the page it sits on: at ~6 in wide the panels are close to
+# square rather than wide and flat, and scaling the figure up to the text width of a
+# document enlarges every label with it.
+PAGE = (6.0, 11.0)
 
 
 def style(ax, labelsize=6):
@@ -73,6 +74,8 @@ def main(argv=None):
     ap.add_argument("--points", type=int, default=40)
     ap.add_argument("--ylim", type=float, nargs=2, default=(-145, 5))
     ap.add_argument("--outdir", type=Path, default=Path("results"))
+    ap.add_argument("--name", default="combined_pathway_overview",
+                    help="output file stem (default: combined_pathway_overview)")
     ap.add_argument("--split", type=int, default=7,
                     help="rows on the first page; 0 for a single figure (default: 7)")
     ap.add_argument("--reuse-titration", action="store_true",
@@ -120,7 +123,7 @@ def main(argv=None):
     written = []
     for part, block in enumerate(blocks, start=1):
         fig = draw_block(block, results, curves, modes, args, mdf_ylim)
-        stem = args.outdir / "figures" / "combined_pathway_overview"
+        stem = args.outdir / "figures" / args.name
         if len(blocks) > 1:
             stem = stem.with_name(f"{stem.name}_part{part}")
         written += mdf.save_figure(fig, stem, dpi=200)
@@ -162,12 +165,12 @@ def draw_block(order, results, curves, modes, args, mdf_ylim):
         ax1.set_title("")
         ax1.set_title(f"M{mode_id:02d}   {modes.loc[mode_id, 'name']}   "
                       f"(MDF = {result.mdf_kj_per_mol:.2f} kJ/mol)",
-                      fontsize=7.5, color=INK, loc="left", pad=3)
+                      fontsize=6.5, color=INK, loc="left", pad=3)
         legend = ax1.get_legend()
         if legend is not None:
             legend.remove()
         if row == 0:
-            ax1.legend(loc="lower left", fontsize=5.5, labelcolor=INK,
+            ax1.legend(loc="lower left", fontsize=4.8, labelcolor=INK,
                        frameon=True, facecolor="white", framealpha=0.85,
                        edgecolor="none", handlelength=1.2, borderpad=0.25)
         style(ax1, labelsize=5.5)
@@ -176,6 +179,7 @@ def draw_block(order, results, curves, modes, args, mdf_ylim):
         ax2.axhline(0, color=INK_MUTED, lw=0.8, ls=(0, (4, 3)), zorder=1)
         ax2.plot(curve.etoh_gL, curve.mdf, color=MDF_COLOR, lw=2, zorder=3)
         ax2.set_xlim(0, args.max_gL)
+        ax2.set_xticks([0, args.max_gL / 2, args.max_gL])
         ax2.set_ylim(mdf_ylim)                      # shared across every row and page
         ax2.set_xlabel("ethanol (g/L)", fontsize=6.5)
         ax2.set_ylabel("MDF (kJ/mol)", fontsize=6.5)
@@ -190,19 +194,21 @@ def draw_block(order, results, curves, modes, args, mdf_ylim):
             ax3.axhline(bound, color=INK_MUTED, lw=0.8, ls=(0, (1, 3)), zorder=1)
         ax3.axhline(1.0, color=GRID, lw=1.0, zorder=1)
         ax3.set_yscale("log")
-        # headroom above the 100:1 bound leaves a clear band for the legend
-        ax3.set_ylim(RATIO_MIN / 3, RATIO_MAX * 8)
+        ax3.set_ylim(RATIO_MIN / 2, RATIO_MAX * 2)
         ax3.set_xlim(0, args.max_gL)
+        ax3.set_xticks([0, args.max_gL / 2, args.max_gL])
         ax3.set_xlabel("ethanol (g/L)", fontsize=6.5)
         ax3.set_ylabel("cofactor ratio", fontsize=6.5)
         style(ax3)
         # a legend on every row, because which pools a pathway uses changes row to row
-        ax3.legend(fontsize=5.5, labelcolor=INK, loc="upper left", ncol=3,
-                   frameon=True, facecolor="white", framealpha=0.85, edgecolor="none",
-                   handlelength=1.0, columnspacing=0.6, borderpad=0.22,
-                   handletextpad=0.4)
+        # above the axes rather than inside it: with only ~1.3 in of panel height there
+        # is no interior band a curve is guaranteed not to reach
+        ax3.legend(fontsize=5, labelcolor=INK, ncol=3, frameon=False,
+                   loc="lower left", bbox_to_anchor=(-0.02, 1.0),
+                   handlelength=1.0, columnspacing=0.7, borderpad=0.1,
+                   handletextpad=0.35)
 
-    fig.tight_layout(h_pad=0.65, w_pad=1.1, pad=0.7)
+    fig.tight_layout(h_pad=1.0, w_pad=0.9, pad=0.6)
     return fig
 
 
