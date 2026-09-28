@@ -38,24 +38,16 @@ import mdf_pathways as mdf  # noqa: E402
 
 MW_ETOH = 46.069  # g/mol -> 1 mM = 0.046069 g/L
 
-WT_MODE = 5   # Cth ethanologen, wild-type NADH-linked AdhE
-NFN_MODE = 4  # NfnAB with NADPH-linked AdhE
+WT_MODE = 5  # Cth ethanologen, wild-type NADH-linked AdhE
 
-# Categorical slots 1-3 of the reference palette, which validate on all pairs in both
-# modes. Colour encodes the source, consistently across both panels.
-C_MODEL_WT = "#2a78d6"   # slot 1, blue   -- MDF model, native pathway
-C_MEASURED = "#eb6834"   # slot 2, orange -- Tian et al. 2017 measurement
-C_MODEL_NFN = "#1baf7a"  # slot 3, aqua   -- MDF model, NfnAB pathway
+# Categorical slots 1 and 2 of the reference palette. Colour encodes the source of the
+# number: measured or modelled.
+C_MEASURED = "#eb6834"  # slot 2, orange -- Tian et al. 2017 measurement
+C_MODEL_WT = "#2a78d6"  # slot 1, blue   -- MDF model, native pathway
 
 INK = "#0b0b0b"
 INK_MUTED = "#52514e"
 GRID = "#d8d7d2"
-
-# From Tian et al. (2017) Fig. 4: specific activity of purified Gapdh versus NADH/NAD+.
-# The C. thermocellum enzyme loses more than half its activity at 0.2 and essentially
-# all of it at 1.0, where the T. saccharolyticum enzyme retains ~30%.
-GAPDH_HALF = 0.2
-GAPDH_OFF = 1.0
 
 
 def mdf_vs_titer(mode_id, titers_gL, cc, model_path, sbtab_dir):
@@ -110,51 +102,30 @@ def main(argv=None):
     titers = np.concatenate([np.linspace(0.2, 2, 10), np.linspace(2.5, 60, 60)])
     sbtab_dir = args.outdir / "sbtab"
     wt = mdf_vs_titer(WT_MODE, titers, cc, args.model, sbtab_dir)
-    nfn = mdf_vs_titer(NFN_MODE, titers, cc, args.model, sbtab_dir)
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(9.5, 4.0))
+    # Two panels on a shared scale, so the shape of the two curves can be compared
+    # directly. One series each, so the panel title names it and no legend is needed.
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8.0, 3.6), sharey=True)
 
-    # --- Panel A: predicted vs measured NADH/NAD+ -------------------------------------
-    ax1.axhspan(GAPDH_OFF, 2.4, color=GRID, alpha=0.28, lw=0, zorder=0)
-    ax1.axhline(GAPDH_OFF, color=INK_MUTED, lw=1.0, ls=(0, (4, 3)), zorder=1)
-    ax1.axhline(GAPDH_HALF, color=INK_MUTED, lw=1.0, ls=(0, (1, 3)), zorder=1)
-    ax1.text(59, GAPDH_OFF + 0.05, "Cth Gapdh inactive", ha="right", va="bottom",
-             fontsize=8, color=INK_MUTED)
-    ax1.text(59, GAPDH_HALF + 0.04, "Cth Gapdh 50% activity", ha="right", va="bottom",
-             fontsize=8, color=INK_MUTED)
-
-    ax1.plot(wt.etoh_gL, wt.nadh_nad, color=C_MODEL_WT, lw=2,
-             label="MDF model, native pathway", zorder=3)
+    # --- Panel A: measured ------------------------------------------------------------
     ax1.plot(measured.etoh_gL, measured.nadh_nad, color=C_MEASURED, lw=2,
-             marker="o", ms=5, mew=1.2, mec="white",
-             label="Measured (Tian et al. 2017)", zorder=4)
-
-    ax1.set_xlabel("ethanol concentration (g/L)")
+             marker="o", ms=6, mew=1.2, mec="white", zorder=3)
     ax1.set_ylabel(r"NADH/NAD$^+$ ratio")
-    ax1.set_xlim(0, 60)
-    ax1.set_ylim(0, 2.4)
-    style(ax1)
-    ax1.legend(loc="upper left", frameon=False, fontsize=9, labelcolor=INK)
-    ax1.set_title("Cofactor ratio rises with product titer",
-                  fontsize=10, color=INK, loc="left", pad=8)
+    ax1.set_title("A   Measured", fontsize=10, color=INK, loc="left", pad=8)
+    ax1.text(0.97, 0.06, "Tian et al. 2017", transform=ax1.transAxes, ha="right",
+             va="bottom", fontsize=9, color=C_MEASURED)
 
-    # --- Panel B: MDF versus titer ----------------------------------------------------
-    ax2.axhline(0, color=INK_MUTED, lw=1.0, ls=(0, (4, 3)), zorder=1)
-    ax2.plot(nfn.etoh_gL, nfn.mdf, color=C_MODEL_NFN, lw=2, zorder=3)
-    ax2.plot(wt.etoh_gL, wt.mdf, color=C_MODEL_WT, lw=2, zorder=3)
+    # --- Panel B: predicted -----------------------------------------------------------
+    ax2.plot(wt.etoh_gL, wt.nadh_nad, color=C_MODEL_WT, lw=2, zorder=3)
+    ax2.set_title("B   Predicted", fontsize=10, color=INK, loc="left", pad=8)
+    ax2.text(0.97, 0.06, "MDF analysis,\nnative pathway", transform=ax2.transAxes,
+             ha="right", va="bottom", fontsize=9, color=C_MODEL_WT, linespacing=1.3)
 
-    ax2.text(30, nfn.mdf.iloc[-1] - 0.35, "NfnAB + engineered AdhE", ha="center",
-             va="top", fontsize=9, color=C_MODEL_NFN)
-    ax2.text(30, np.interp(30, wt.etoh_gL, wt.mdf) - 0.35, "native pathway",
-             ha="center", va="top", fontsize=9, color=C_MODEL_WT)
-
-    ax2.set_xlabel("ethanol concentration (g/L)")
-    ax2.set_ylabel("MDF (kJ/mol)")
-    ax2.set_xlim(0, 60)
-    ax2.set_ylim(-0.4, 7.4)
-    style(ax2)
-    ax2.set_title("Driving force lost to product accumulation",
-                  fontsize=10, color=INK, loc="left", pad=8)
+    for ax in (ax1, ax2):
+        ax.set_xlabel("ethanol concentration (g/L)")
+        ax.set_xlim(0, 60)
+        ax.set_ylim(0, 2.0)
+        style(ax)
 
     fig.tight_layout()
     figure_dir = args.outdir / "figures"

@@ -300,10 +300,10 @@ increase in ethanol is paid for directly out of the pathway's driving force.
 
 ### Comparison with measured metabolome data
 
-`python compare_to_tian2017.py` overlays the predicted NADH/NAD⁺ ratio on the values
-measured by Tian et al. (2017), who added ethanol to a growing *C. thermocellum* culture
-at ~5 g/L/h and quantified intracellular metabolites by LC-MS
-(`results/figures/tian2017_comparison.*`).
+`python compare_to_tian2017.py` plots the measured and predicted NADH/NAD⁺ ratios side by
+side on a common scale (`results/figures/tian2017_comparison.*`). The measurements are
+from Tian et al. (2017), who added ethanol to a growing *C. thermocellum* culture at
+~5 g/L/h and quantified intracellular metabolites by LC-MS against purified standards.
 
 | ethanol (g/L) | measured NADH/NAD⁺ | predicted |
 |---:|---:|---:|
@@ -323,10 +323,11 @@ not kinetics, becomes the binding constraint.
 The same study independently identified GAPDH as the site of the bottleneck, by two routes
 this analysis does not use: metabolites accumulated upstream of GAPDH and were depleted
 downstream of it, and the purified *C. thermocellum* enzyme lost more than half its
-activity at NADH/NAD⁺ = 0.2 and essentially all of it at 1.0 (the reference lines in the
-figure), where the *T. saccharolyticum* enzyme retained ~30%. Expressing the
-*T. saccharolyticum* `gapdh` in *C. thermocellum* improved both ethanol tolerance and
-production.
+activity at NADH/NAD⁺ = 0.2 and essentially all of it at 1.0, where the
+*T. saccharolyticum* enzyme retained ~30%. Expressing the *T. saccharolyticum* `gapdh` in
+*C. thermocellum* improved both ethanol tolerance and production. The measured ratio
+crosses 1.0 at roughly 35 g/L ethanol — the point at which, in vitro, the native enzyme
+stops working.
 
 ### Net ΔrG′° is identical within a stoichiometry class
 
