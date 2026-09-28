@@ -34,6 +34,7 @@ mdf_pathways.py                 library: Excel -> SBtab -> MDF -> figure
 run_mdf_analysis.py             command-line driver
 compare_to_tian2017.py          overlay the prediction on measured metabolome data
 mdf_vs_titer.py                 MDF versus ethanol titer, for any set of pathways
+cofactor_titration.py           MDF and the redox ratios versus titer, one figure per mode
 notebooks/
   mdf_analysis.ipynb            worked example / interactive exploration
 results/
@@ -329,7 +330,26 @@ NADH/NAD⁺ from 0.43 to 2.00 and charges every increment to GAPDH. An NADPH-lin
 does not compete for that pool.
 
 The same script handles any pathway pair, e.g. `--modes 5 4` for the native
-*C. thermocellum* route against NfnAB with an engineered AdhE.
+*C. thermocellum* route against NfnAB with an engineered AdhE. Fabri et al. (2025) report that
+NADPH-linked rather than NADH-linked ADH activity increases ethanol tolerance, which is
+the direction this predicts; titer data are not yet available, and the two are not
+interchangeable.
+
+### How each pathway re-poises its cofactors as product accumulates
+
+`python cofactor_titration.py` writes one four-panel figure per pathway to
+`results/figures/titration/`, showing the MDF and the NADH/NAD⁺, NADPH/NADP⁺ and
+Fd(red)/Fd(ox) ratios against ethanol titer, with the full curves in
+`results/tables/cofactor_titration.csv`. Ratio panels are on a log scale with dotted
+lines at the 1:100 and 100:1 bounds; a pathway that lacks a pool leaves that panel empty
+rather than dropping it, so the figures stay comparable.
+
+Read together they separate the pathways into two kinds. Those whose terminal reductions
+draw on NADH must walk NADH/NAD⁺ up as ethanol accumulates and lose driving force doing
+it — modes 1, 5, 12 and 13 all run 0.20 → 2.00 while the MDF falls 3.59 → 0.74 over
+0.1–100 g/L. Those that decouple the terminal steps hold NADH/NAD⁺ pinned at the 1:100
+bound and their MDF does not move at all: modes 4, 9 and 11 are flat across the entire
+range.
 
 ### Comparison with measured metabolome data
 
