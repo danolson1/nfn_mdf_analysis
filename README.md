@@ -29,8 +29,10 @@ most driving force at 2 M (≈9% w/v) ethanol.
 data/
   ethanol_pathway_model.xlsx    pathway model: reactions, flux modes, concentration bounds
   thermodynamic_config.tsv      pH, ionic strength, pMg, temperature
+  tian2017_nadh_nad.csv         measured NADH/NAD+ vs ethanol, Tian et al. 2017
 mdf_pathways.py                 library: Excel -> SBtab -> MDF -> figure
 run_mdf_analysis.py             command-line driver
+compare_to_tian2017.py          overlay the prediction on measured metabolome data
 notebooks/
   mdf_analysis.ipynb            worked example / interactive exploration
 results/
@@ -295,6 +297,36 @@ The MDF of the NFN pathway is independent of ethanol concentration, because its 
 steps draw on a separate, highly reduced NADPH pool and have driving force to spare. In
 the wild-type pathway the ALDH and ADH steps are part of the bottleneck, so every
 increase in ethanol is paid for directly out of the pathway's driving force.
+
+### Comparison with measured metabolome data
+
+`python compare_to_tian2017.py` overlays the predicted NADH/NAD⁺ ratio on the values
+measured by Tian et al. (2017), who added ethanol to a growing *C. thermocellum* culture
+at ~5 g/L/h and quantified intracellular metabolites by LC-MS
+(`results/figures/tian2017_comparison.*`).
+
+| ethanol (g/L) | measured NADH/NAD⁺ | predicted |
+|---:|---:|---:|
+| 0.5 | 0.30 | 0.33 |
+| 9.2 | 0.45 | 0.90 |
+| 21.7 | 0.54 | 1.20 |
+| 33.6 | 0.94 | 1.39 |
+| 48.4 | 1.39 | 1.57 |
+| 55.3 | 1.73 | 1.64 |
+
+Both rise steeply with titer and agree closely at the low and high ends; at intermediate
+titers the measurement lags the prediction, converging on it only as ethanol accumulates.
+That is the expected direction of disagreement — MDF describes a cell operating exactly at
+its thermodynamic optimum, which a real culture approaches only once thermodynamics, and
+not kinetics, becomes the binding constraint.
+
+The same study independently identified GAPDH as the site of the bottleneck, by two routes
+this analysis does not use: metabolites accumulated upstream of GAPDH and were depleted
+downstream of it, and the purified *C. thermocellum* enzyme lost more than half its
+activity at NADH/NAD⁺ = 0.2 and essentially all of it at 1.0 (the reference lines in the
+figure), where the *T. saccharolyticum* enzyme retained ~30%. Expressing the
+*T. saccharolyticum* `gapdh` in *C. thermocellum* improved both ethanol tolerance and
+production.
 
 ### Net ΔrG′° is identical within a stoichiometry class
 

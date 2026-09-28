@@ -1,0 +1,23 @@
+# Measured intracellular NADH/NAD+ ratio in Clostridium thermocellum during gradual
+# ethanol addition, from Tian et al. (2017) Biotechnol Biofuels 10:276,
+# doi:10.1186/s13068-017-0961-3, Figure 2a (red series, "with ethanol addition").
+#
+# Ethanol was added to a growing culture at ~5 g/L/h. Metabolites were quantified by
+# LC-MS against purified standards, so these are absolute cofactor ratios rather than
+# relative peak areas. Error bars in the source figure are 1 SD, n = 3 biological
+# replicates; the per-replicate spread is not reproduced here.
+#
+# etoh_gL is as reported; etoh_mM = etoh_gL / 0.046069 (MW 46.07 g/mol).
+#
+# Reused here under the article's CC BY 4.0 license.
+time_h,etoh_mM,etoh_gL,nadh_nad
+0.0,10,0.46,0.298
+1.0,100,4.61,0.346
+2.0,200,9.21,0.446
+3.0,340,15.66,0.496
+4.0,470,21.65,0.544
+5.0,560,25.80,0.892
+6.5,730,33.63,0.940
+8.0,870,40.08,1.288
+10.0,1050,48.37,1.386
+12.0,1200,55.28,1.732
