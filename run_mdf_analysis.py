@@ -11,6 +11,7 @@ Examples
 from __future__ import annotations
 
 import argparse
+import logging
 import sys
 from pathlib import Path
 
@@ -21,6 +22,10 @@ matplotlib.use("Agg")  # no interactive display needed
 import matplotlib.pyplot as plt  # noqa: E402
 
 import mdf_pathways as mdf  # noqa: E402
+
+# Subsetting DejaVu for TrueType embedding makes fontTools complain about the font's
+# head-table timestamps once per saved file. Harmless, and it drowns out real output.
+logging.getLogger("fontTools").setLevel(logging.ERROR)
 
 
 def parse_args(argv=None):

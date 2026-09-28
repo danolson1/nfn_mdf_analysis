@@ -159,6 +159,15 @@ those reproducible too:
 SOURCE_DATE_EPOCH=1727395200 python run_mdf_analysis.py
 ```
 
+### Figure fonts
+
+`mdf_pathways` sets `pdf.fonttype` and `ps.fonttype` to 42 on import, so vector output
+embeds real TrueType fonts (PDF Type0/CIDFontType2 with a ToUnicode CMap, leaving the text
+selectable and searchable). Matplotlib's default of type 3 writes each glyph as drawing
+operations and is rejected by several publishers, including Elsevier, IEEE and ACS. Text
+uses matplotlib's default DejaVu Sans at a 10 pt base size; set `font.family` and
+`font.sans-serif` if a target journal requires a particular typeface.
+
 Pinned versions are in `requirements.txt`. The results were produced with
 equilibrator-api 0.8.1 and Python 3.12.14 on Windows 11. `equilibrator-cache-data` ships
 the component-contribution training data as a Python package, so no download is needed on

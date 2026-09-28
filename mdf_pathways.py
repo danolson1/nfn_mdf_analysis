@@ -31,11 +31,19 @@ import logging
 from dataclasses import dataclass
 from pathlib import Path
 
+import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
 from equilibrator_api import ComponentContribution
 from equilibrator_pathway import ThermodynamicModel
 from sbtab import SBtab, validatorSBtab
+
+# Embed real TrueType fonts in vector output. Matplotlib's default (type 3) writes each
+# glyph as PDF drawing operations, which leaves the text unselectable and unsearchable
+# and is rejected by several publishers (Elsevier, IEEE, ACS). Set on import so the CLI
+# and the notebook both produce submission-ready files.
+matplotlib.rcParams["pdf.fonttype"] = 42
+matplotlib.rcParams["ps.fonttype"] = 42
 
 logger = logging.getLogger(__name__)
 
