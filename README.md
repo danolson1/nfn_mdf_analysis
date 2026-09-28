@@ -35,6 +35,7 @@ run_mdf_analysis.py             command-line driver
 compare_to_tian2017.py          overlay the prediction on measured metabolome data
 mdf_vs_titer.py                 MDF versus ethanol titer, for any set of pathways
 cofactor_titration.py           MDF and the redox ratios versus titer, one figure per mode
+combined_figure.py              all pathways in one figure, one row each, sorted by MDF
 notebooks/
   mdf_analysis.ipynb            worked example / interactive exploration
 results/
@@ -346,6 +347,23 @@ substantial NADPH-linked activity — but by removing the NADH-linked route they
 ethanol production to an NADPH-linked ADH, moving the organism from mode 1 toward mode 2.
 Note that the measured effect is on *tolerance*; titer data are not yet available, and
 the two are not interchangeable.
+
+### Every pathway in one figure
+
+`python combined_figure.py` writes `results/figures/combined_pathway_overview.*`: one row
+per pathway, sorted by MDF at the reference titer, with three panels across — the
+cumulative driving-force plot at 2 M ethanol, the MDF against ethanol titer, and the
+three redox ratios overlaid on one log axis against titer.
+
+The top three rows (modes 11, 4 and 9) show the pattern the analysis turns on: the middle
+panel is a flat line, and in the right panel NADH/NAD⁺ sits pinned on the 1:100 bound
+while NADPH/NADP⁺ and Fd(red)/Fd(ox) run two to four orders of magnitude above it. The
+bottom rows (modes 1, 13, 12, 5) show the opposite — a decaying MDF, and all available
+ratios converging near 1.
+
+Pass `--reuse-titration` to read the curves from `results/tables/cofactor_titration.csv`
+rather than re-solving them; it is the same calculation, and it turns a ten-minute
+rebuild into a few seconds.
 
 ### How each pathway re-poises its cofactors as product accumulates
 
