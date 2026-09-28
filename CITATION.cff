@@ -14,8 +14,8 @@ authors:
     affiliation: Dartmouth College
     orcid: "https://orcid.org/0000-0001-5393-6302"
 license: MIT
-version: 1.0.0
-date-released: 2025-09-27
+version: 1.0.1
+date-released: 2026-09-28
 keywords:
   - thermodynamics
   - max-min driving force
