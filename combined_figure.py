@@ -39,17 +39,20 @@ GRID = "#d8d7d2"
 # Panel 3 overlays three series on one axis, so these need to be distinguishable: the
 # reference palette's first three categorical slots, which validate on all pairs.
 RATIOS = [
-    ("nadh/nad", r"NADH/NAD$^+$", "#2a78d6"),
-    ("nadph/nadp", r"NADPH/NADP$^+$", "#eb6834"),
-    ("fdred/fdox", r"Fd$_{red}$/Fd$_{ox}$", "#1baf7a"),
+    ("nadh/nad", r"NADH/NAD$^+$", "#2a78d6"),    # blue
+    ("nadph/nadp", r"NADPH/NADP$^+$", "#1baf7a"),  # aqua
+    ("fdred/fdox", r"Fd$_{red}$/Fd$_{ox}$", "#8c5a2b"),  # brown
 ]
 MDF_COLOR = "#4a3aa7"
 
 RATIO_MIN, RATIO_MAX = 0.01, 100.0
-ROW_HEIGHT = 2.75
+
+# US Letter, portrait. Rows are sized to fill the page, so the split has to be small
+# enough that the driving-force panel still has room for its rotated reaction labels.
+PAGE = (8.5, 11.0)
 
 
-def style(ax, labelsize=8):
+def style(ax, labelsize=6):
     for side in ("top", "right"):
         ax.spines[side].set_visible(False)
     for side in ("left", "bottom"):
@@ -70,6 +73,8 @@ def main(argv=None):
     ap.add_argument("--points", type=int, default=40)
     ap.add_argument("--ylim", type=float, nargs=2, default=(-145, 5))
     ap.add_argument("--outdir", type=Path, default=Path("results"))
+    ap.add_argument("--split", type=int, default=7,
+                    help="rows on the first page; 0 for a single figure (default: 7)")
     ap.add_argument("--reuse-titration", action="store_true",
                     help="read the curves from results/tables/cofactor_titration.csv "
                          "instead of re-solving them (they are the same calculation)")
@@ -104,9 +109,40 @@ def main(argv=None):
 
     order = sorted(mode_ids, key=lambda m: results[m].mdf_kj_per_mol, reverse=True)
 
+    # one shared MDF scale across both pages, so rows compare directly
+    mdf_hi = max(c.mdf.max() for c in curves.values())
+    mdf_ylim = (-0.4, mdf_hi * 1.06)
+
+    blocks = ([order[:args.split], order[args.split:]] if args.split
+              else [order])
+    blocks = [b for b in blocks if b]
+
+    written = []
+    for part, block in enumerate(blocks, start=1):
+        fig = draw_block(block, results, curves, modes, args, mdf_ylim)
+        stem = args.outdir / "figures" / "combined_pathway_overview"
+        if len(blocks) > 1:
+            stem = stem.with_name(f"{stem.name}_part{part}")
+        written += mdf.save_figure(fig, stem, dpi=200)
+        plt.close(fig)
+
+    summary = pd.DataFrame(
+        [{"rank": i + 1, "mode_id": m, "name": modes.loc[m, "name"],
+          "mdf_kJ_per_mol": round(results[m].mdf_kj_per_mol, 2),
+          "part": 1 + (i >= args.split if args.split else 0)}
+         for i, m in enumerate(order)])
+    print()
+    print(summary.to_string(index=False))
+    for p in written:
+        print("wrote", p)
+    return 0
+
+
+def draw_block(order, results, curves, modes, args, mdf_ylim):
+    """Draw one page: one row per pathway, three panels across."""
     n = len(order)
-    fig, axes = plt.subplots(n, 3, figsize=(13.0, ROW_HEIGHT * n),
-                             gridspec_kw={"width_ratios": [1.25, 1.0, 1.0]})
+    fig, axes = plt.subplots(n, 3, figsize=PAGE,
+                             gridspec_kw={"width_ratios": [1.35, 1.0, 1.0]})
     if n == 1:
         axes = np.array([axes])
 
@@ -119,29 +155,30 @@ def main(argv=None):
         result.solution.plot_driving_forces(ax=ax1)
         ax1.set_ylim(args.ylim)
         ax1.set_xticks(ax1.get_xticks(), ax1.get_xticklabels(), rotation=90, ha="right")
-        ax1.set_ylabel(r"cumulative $\Delta_r G'$ (kJ/mol)", fontsize=9)
-        ax1.set_xlabel("reaction step", fontsize=9)
+        ax1.set_ylabel(r"cum. $\Delta_r G'$ (kJ/mol)", fontsize=6.5)
+        ax1.set_xlabel("")
         # matplotlib keeps the left/center/right titles as separate artists, so
         # plot_driving_forces' centred "MDF = ..." survives unless it is cleared first
         ax1.set_title("")
         ax1.set_title(f"M{mode_id:02d}   {modes.loc[mode_id, 'name']}   "
                       f"(MDF = {result.mdf_kj_per_mol:.2f} kJ/mol)",
-                      fontsize=10, color=INK, loc="left", pad=6)
+                      fontsize=7.5, color=INK, loc="left", pad=3)
         legend = ax1.get_legend()
         if legend is not None:
             legend.remove()
         if row == 0:
-            ax1.legend(loc="lower left", fontsize=7, labelcolor=INK,
+            ax1.legend(loc="lower left", fontsize=5.5, labelcolor=INK,
                        frameon=True, facecolor="white", framealpha=0.85,
-                       edgecolor="none")
-        style(ax1, labelsize=7)
+                       edgecolor="none", handlelength=1.2, borderpad=0.25)
+        style(ax1, labelsize=5.5)
 
         # --- panel 2: MDF against titer ----------------------------------------------
         ax2.axhline(0, color=INK_MUTED, lw=0.8, ls=(0, (4, 3)), zorder=1)
         ax2.plot(curve.etoh_gL, curve.mdf, color=MDF_COLOR, lw=2, zorder=3)
         ax2.set_xlim(0, args.max_gL)
-        ax2.set_xlabel("ethanol (g/L)", fontsize=9)
-        ax2.set_ylabel("MDF (kJ/mol)", fontsize=9)
+        ax2.set_ylim(mdf_ylim)                      # shared across every row and page
+        ax2.set_xlabel("ethanol (g/L)", fontsize=6.5)
+        ax2.set_ylabel("MDF (kJ/mol)", fontsize=6.5)
         style(ax2)
 
         # --- panel 3: the three redox ratios on one log axis --------------------------
@@ -156,28 +193,17 @@ def main(argv=None):
         # headroom above the 100:1 bound leaves a clear band for the legend
         ax3.set_ylim(RATIO_MIN / 3, RATIO_MAX * 8)
         ax3.set_xlim(0, args.max_gL)
-        ax3.set_xlabel("ethanol (g/L)", fontsize=9)
-        ax3.set_ylabel("cofactor ratio", fontsize=9)
+        ax3.set_xlabel("ethanol (g/L)", fontsize=6.5)
+        ax3.set_ylabel("cofactor ratio", fontsize=6.5)
         style(ax3)
         # a legend on every row, because which pools a pathway uses changes row to row
-        ax3.legend(fontsize=7, labelcolor=INK, loc="upper left", ncol=3,
+        ax3.legend(fontsize=5.5, labelcolor=INK, loc="upper left", ncol=3,
                    frameon=True, facecolor="white", framealpha=0.85, edgecolor="none",
-                   handlelength=1.4, columnspacing=1.0, borderpad=0.3)
+                   handlelength=1.0, columnspacing=0.6, borderpad=0.22,
+                   handletextpad=0.4)
 
-    fig.tight_layout(h_pad=1.1, w_pad=1.5)
-    paths = mdf.save_figure(fig, args.outdir / "figures" / "combined_pathway_overview",
-                            dpi=150)
-    plt.close(fig)
-
-    summary = pd.DataFrame(
-        [{"rank": i + 1, "mode_id": m, "name": modes.loc[m, "name"],
-          "mdf_kJ_per_mol": round(results[m].mdf_kj_per_mol, 2)}
-         for i, m in enumerate(order)])
-    print()
-    print(summary.to_string(index=False))
-    for p in paths:
-        print("wrote", p)
-    return 0
+    fig.tight_layout(h_pad=0.65, w_pad=1.1, pad=0.7)
+    return fig
 
 
 if __name__ == "__main__":

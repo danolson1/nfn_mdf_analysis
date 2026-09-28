@@ -350,10 +350,13 @@ the two are not interchangeable.
 
 ### Every pathway in one figure
 
-`python combined_figure.py` writes `results/figures/combined_pathway_overview.*`: one row
-per pathway, sorted by MDF at the reference titer, with three panels across — the
-cumulative driving-force plot at 2 M ethanol, the MDF against ethanol titer, and the
-three redox ratios overlaid on one log axis against titer.
+`python combined_figure.py` writes `combined_pathway_overview_part1.*` and `_part2.*` to
+`results/figures/`: one row per pathway, sorted by MDF at the reference titer, split
+seven rows and eight so each fits a US Letter page. Three panels across — the cumulative
+driving-force plot at 2 M ethanol, the MDF against ethanol titer, and the three redox
+ratios overlaid on one log axis against titer. The MDF panels share one vertical scale
+across every row and both pages, so heights are directly comparable. `--split 0` produces
+a single tall figure instead.
 
 The top three rows (modes 11, 4 and 9) show the pattern the analysis turns on: the middle
 panel is a flat line, and in the right panel NADH/NAD⁺ sits pinned on the 1:100 bound
