@@ -34,7 +34,7 @@ from pathlib import Path
 import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
-from equilibrator_api import ComponentContribution
+from equilibrator_api import ComponentContribution, Q_
 from equilibrator_pathway import ThermodynamicModel
 from sbtab import SBtab, validatorSBtab
 
@@ -320,6 +320,44 @@ def run_mdf(
         solution=solution,
         sbtab_path=sbtab_path,
     )
+
+
+MW_ETOH = 46.069  # g/mol, so 1 mM ethanol = 0.046069 g/L
+
+
+def titrate_product(
+    xlsx_path: Path | str,
+    mode_id: int,
+    titers_gL,
+    comp_contrib: ComponentContribution,
+    out_dir: Path | str = "results/sbtab",
+    product: str = "etoh",
+) -> pd.DataFrame:
+    """Re-solve one pathway across a range of product titers.
+
+    Returns a frame of ``etoh_gL``, ``etoh_mM``, ``mdf`` and the cofactor ratios at each
+    titer. The SBtab model is built once and the product bound overridden per point, so
+    this measures the effect of the titer alone.
+    """
+    _, sbtab_path = build_sbtab(xlsx_path, mode_id, out_dir=out_dir)
+
+    rows = []
+    for gL in titers_gL:
+        mM = gL / (MW_ETOH / 1000.0)
+        model = ThermodynamicModel.from_sbtab(str(sbtab_path), comp_contrib=comp_contrib)
+        model.set_bounds(product, Q_(mM, "mM"), Q_(mM, "mM"))
+        solution = model.mdf_analysis()
+        conc = _tidy_compound_df(solution.compound_df).set_index("compound_id")
+        conc = conc["concentration_in_mM"]
+
+        row = {"etoh_gL": gL, "etoh_mM": mM, "mdf": float(solution.score)}
+        for numerator, denominator in [("nadh", "nad"), ("nadph", "nadp"),
+                                       ("fdred", "fdox")]:
+            if numerator in conc.index and denominator in conc.index:
+                row[f"{numerator}/{denominator}"] = conc[numerator] / conc[denominator]
+        rows.append(row)
+
+    return pd.DataFrame(rows)
 
 
 # --------------------------------------------------------------------------------------

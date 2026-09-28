@@ -33,6 +33,7 @@ data/
 mdf_pathways.py                 library: Excel -> SBtab -> MDF -> figure
 run_mdf_analysis.py             command-line driver
 compare_to_tian2017.py          overlay the prediction on measured metabolome data
+mdf_vs_titer.py                 MDF versus ethanol titer, for any set of pathways
 notebooks/
   mdf_analysis.ipynb            worked example / interactive exploration
 results/
@@ -305,6 +306,30 @@ The MDF of the NFN pathway is independent of ethanol concentration, because its 
 steps draw on a separate, highly reduced NADPH pool and have driving force to spare. In
 the wild-type pathway the ALDH and ADH steps are part of the bottleneck, so every
 increase in ethanol is paid for directly out of the pathway's driving force.
+
+### Cofactor specificity of the ADH sets the titer response
+
+`python mdf_vs_titer.py --modes 1 2 --name tsac_adh_cofactor` compares the two
+*T. saccharolyticum* routes that differ only at the terminal reduction: mode 1, with
+NADH-linked ALDH and ADH, against mode 2, which adds NfnAB to supply NADPH to an
+NADPH-linked ADH (`results/figures/tsac_adh_cofactor.*`).
+
+| ethanol (g/L) | MDF, NADH-ADH | MDF, NADPH-ADH | NADH/NAD⁺ (M01) | NADH/NAD⁺ (M02) |
+|---:|---:|---:|---:|---:|
+| 1 | 2.64 | 4.88 | 0.43 | 0.07 |
+| 20 | 1.40 | 3.40 | 1.17 | 0.23 |
+| 55 | 0.98 | 2.90 | 1.64 | 0.35 |
+| 100 | 0.74 | 2.60 | 2.00 | 0.45 |
+
+The NADPH-linked route holds ~2 kJ/mol more driving force at every titer. Put another
+way, at 100 g/L it still has more driving force than the NADH-linked route has at 1 g/L.
+An NADH-linked ADH has to share the NAD(H) pool with GAPDH, which wants it poised the
+other way, so sustaining the terminal reduction against accumulating product drives
+NADH/NAD⁺ from 0.43 to 2.00 and charges every increment to GAPDH. An NADPH-linked ADH
+does not compete for that pool.
+
+The same script handles any pathway pair, e.g. `--modes 5 4` for the native
+*C. thermocellum* route against NfnAB with an engineered AdhE.
 
 ### Comparison with measured metabolome data
 
