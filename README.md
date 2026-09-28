@@ -1,5 +1,7 @@
 # Thermodynamic (MDF) analysis of ethanol production pathways
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23004835.svg)](https://doi.org/10.5281/zenodo.23004835)
+
 Max-min Driving Force (MDF) analysis of alternative routes from glucose to ethanol in
 the thermophilic anaerobes *Clostridium thermocellum* and *Thermoanaerobacterium
 saccharolyticum*, evaluated at a high ethanol titer.
@@ -363,6 +365,11 @@ expected value.
 - Lubitz T, Hahn J, Bergmann FT, Noor E, Klipp E, Liebermeister W (2016). SBtab: a flexible
   table format for data exchange in systems biology. *Bioinformatics* 32:2559–2561.
   doi:10.1093/bioinformatics/btw179
+
+## Citing this work
+
+Archived at Zenodo: <https://doi.org/10.5281/zenodo.23004835>. Machine-readable metadata
+is in `CITATION.cff`; GitHub's "Cite this repository" button reads it directly.
 
 ## License
 
