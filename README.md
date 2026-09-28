@@ -379,11 +379,22 @@ from Tian et al. (2017), who added ethanol to a growing *C. thermocellum* cultur
 | 48.4 | 1.39 | 1.57 |
 | 55.3 | 1.73 | 1.64 |
 
-Both rise steeply with titer and agree closely at the low and high ends; at intermediate
-titers the measurement lags the prediction, converging on it only as ethanol accumulates.
-That is the expected direction of disagreement — MDF describes a cell operating exactly at
-its thermodynamic optimum, which a real culture approaches only once thermodynamics, and
-not kinetics, becomes the binding constraint.
+Both rise about five-fold across the same range of titers, and converge at high ethanol.
+At intermediate titers the measurement lags the prediction, which is the expected
+direction of disagreement: MDF describes a cell operating exactly at its thermodynamic
+optimum, which a real culture approaches only once thermodynamics, and not kinetics, is
+the binding constraint.
+
+The five-fold span is structural rather than fitted. NADH/NAD⁺ ∝ [ethanol]^⅓ follows from
+the binding constraints, and the experiment spans 120-fold in titer, so the predicted
+span is 120^⅓ = 4.93 regardless of parameters — enabling the dG′° confidence ellipsoid,
+fixing CO₂ anywhere in 0.001–10 mM, fixing NAD⁺ anywhere in 0.01–1 mM, or removing the
+ATP/ADP constraint all leave it unchanged. Only the dG′° treatment shifts the absolute
+level, and by the same factor at both ends.
+
+The close agreement at *low* titer is coincidence, and should not be claimed as support:
+that sample was taken before ethanol was added, from a cell that is not thermodynamically
+limited and has no reason to sit at its MDF optimum.
 
 The same study independently identified GAPDH as the site of the bottleneck, by two routes
 this analysis does not use: metabolites accumulated upstream of GAPDH and were depleted
