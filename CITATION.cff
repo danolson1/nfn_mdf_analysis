@@ -14,8 +14,8 @@ authors:
     affiliation: Dartmouth College
     orcid: "https://orcid.org/0000-0001-5393-6302"
 license: MIT
-version: 1.0.1
-date-released: 2026-09-28
+version: 1.1.0
+date-released: 2026-10-27
 keywords:
   - thermodynamics
   - max-min driving force
@@ -24,6 +24,5 @@ keywords:
   - Thermoanaerobacterium saccharolyticum
   - ethanol
   - eQuilibrator
-# Fill in once the repository and Zenodo record exist:
 repository-code: "https://github.com/danolson1/nfn_mdf_analysis"
 doi: "10.5281/zenodo.23005004"
